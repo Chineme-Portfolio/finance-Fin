@@ -32,6 +32,11 @@ This is mandatory, in the same way reading the context files before writing code
 
 ## Entries
 
+### 2026-09-01 · feature · Insight engine keystone built, verified, tested (spec 0002)
+**Area:** lib/insights, lib/types
+**What:** Built the keystone (foundation.md §9): the provider-neutral domain model (`lib/types/`) and the pure, synchronous insight engine (`lib/insights/`). Ships two insights, composition ("what do I own", grouped by security type) and cash drag (uninvested cash). Raw Plaid → domain mapping in `lib/aggregator/plaid/map.ts`, validated against the committed real fixtures. Set up Vitest (first test runner in the project).
+**Notes:** `accountTotalMinor` is the sum of holding values, never the provider balance (invariant 8 — the real fixture shows them diverge ~6%; a cross-check caught this at spec time). Shares are integer basis points summing to exactly 10000. `ContributionEvent`/`PlanFacts` are defined but unused, intentional groundwork for the deferred match differential (gated on spec 0001 task 9). Ran the full gate: /check verify (all 9 ACs met on real data), /check review on Sonnet (approve with nits; two minors fixed — a shared total helper, and obscure account subtypes → "other"), /test (22 Vitest tests passing, tagged to their ACs). Spec 0002 advanced to Accepted. Committed locally (no remote exists).
+
 ### 2026-09-01 · docs · UI trio generated from the design export
 **Area:** context
 **What:** Committed the design-system export to `design-system/` and generated the UI trio from it: `ui-tokens.md` (layered token contract, colour/type/space/radii/motion, the money-is-serif and no-red-green invariants), `ui-rules.md` (the §0 prime directive plus the three first-class product states), and `ui-registry.md` (all 30 components, every row ⬜ planned). Dropped the PENDING markers in `README.md`.
