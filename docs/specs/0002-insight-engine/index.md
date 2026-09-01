@@ -1,7 +1,7 @@
 # 0002. Insight engine: the domain model and the pure derivation core
 
 **Date**: 2026-09-01
-**Status**: Proposed
+**Status**: Accepted
 
 ## Summary
 
