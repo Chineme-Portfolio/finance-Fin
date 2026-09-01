@@ -1,0 +1,23 @@
+/* Deliberately minimal. Spec 0001: the spike page is disposable and unstyled,
+   so that no look-and-feel is established before the design system exists.
+   See context/design-handoff.md. */
+body {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  margin: 0;
+  padding: 1.5rem;
+  line-height: 1.5;
+}
+table {
+  border-collapse: collapse;
+}
+th,
+td {
+  border: 1px solid currentColor;
+  padding: 0.25rem 0.5rem;
+  text-align: left;
+  font-size: 0.85rem;
+}
+pre {
+  overflow-x: auto;
+  font-size: 0.75rem;
+}
