@@ -1,0 +1,113 @@
+:root{
+  /* ---- Base ramps ------------------------------------------------------ */
+  /* Paper: the brand ground. Never pure white at page level. */
+  --paper:#FDF6EE;
+  --paper-sunk:#F7EDE1;
+  --paper-deep:#F0E2D1;
+  --white:#FFFFFF;
+
+  /* Ink: warm near-black, never #000 */
+  --ink:#1E1913;
+  --ink-80:#4A423A;
+  --ink-60:#6F6459;
+  --ink-45:#8F8377;
+  --ink-25:#BBB0A3;
+  --ink-12:#E0D6C9;
+
+  /* Clay — the primary brand colour */
+  --clay-700:#6E2515;
+  --clay-600:#8B331E;
+  --clay-500:#A83E28;
+  --clay-400:#C4664F;
+  --clay-300:#DB9D8B;
+  --clay-200:#F0CFC4;
+  --clay-100:#FAE7E0;
+
+  /* Apricot — the warm secondary and the "pop" */
+  --apricot-600:#C4763C;
+  --apricot-500:#E0965C;
+  --apricot-400:#EAB183;
+  --apricot-300:#F2CDAB;
+  --apricot-100:#FBEBDA;
+
+  /* Pine — gains, confirmations, money that grew */
+  --pine-700:#1B4034;
+  --pine-500:#2F6A4F;
+  --pine-300:#8FB8A2;
+  --pine-100:#DDEBE2;
+
+  /* Slate — charts and neutral data only, never an action */
+  --slate-500:#5C6B70;
+  --slate-300:#A9B5B8;
+  --slate-100:#E2E8E9;
+
+  /* ---- Semantic aliases ------------------------------------------------ */
+  --bg-page:var(--paper);
+  --bg-surface:var(--white);
+  --bg-sunk:var(--paper-sunk);
+  --bg-tint:var(--clay-100);
+  --bg-tint-warm:var(--apricot-100);
+  --bg-inverse:var(--ink);
+  --bg-brand:var(--clay-500);
+
+  --text-strong:var(--ink);
+  --text-body:var(--ink-80);
+  --text-muted:var(--ink-60);
+  --text-faint:var(--ink-45);
+  --text-brand:var(--clay-500);
+  --text-on-dark:var(--paper);
+  --text-on-dark-muted:#B8ABA0;
+  --text-on-brand:#FFF6F1;
+  --text-link:var(--clay-500);
+  --text-link-hover:var(--clay-700);
+
+  --border-hairline:var(--ink-12);
+  --border-soft:#EFE3D5;
+  --border-strong:var(--ink);
+  --border-brand:var(--clay-500);
+  --focus-ring:var(--clay-500);
+
+  --action-primary-bg:var(--clay-500);
+  --action-primary-hover:var(--clay-600);
+  --action-primary-press:var(--clay-700);
+  --action-primary-fg:var(--text-on-brand);
+  --action-secondary-bg:var(--white);
+  --action-secondary-fg:var(--ink);
+  --action-ghost-hover:var(--paper-deep);
+  --action-disabled-bg:var(--paper-deep);
+  --action-disabled-fg:var(--ink-25);
+
+  /* Money semantics. Gain is pine, loss is a deepened clay so it never
+     collides with the primary action colour. */
+  --data-gain:var(--pine-500);
+  --data-gain-bg:var(--pine-100);
+  --data-loss:#8B331E;
+  --data-loss-bg:var(--clay-100);
+  --data-neutral:var(--slate-500);
+  --data-attention:var(--apricot-500);
+  --data-attention-bg:var(--apricot-100);
+
+  /* Categorical chart ramp, in order */
+  --chart-1:var(--clay-500);
+  --chart-2:var(--apricot-500);
+  --chart-3:var(--pine-500);
+  --chart-4:var(--slate-500);
+  --chart-5:var(--apricot-300);
+  --chart-track:var(--paper-deep);
+}
+
+/* Inverse surfaces (footers, the match banner, marketing bands). */
+.fb-inverse{
+  --bg-surface:var(--ink);
+  --bg-page:var(--ink);
+  --text-strong:var(--paper);
+  --text-body:#D9CEC2;
+  --text-muted:var(--text-on-dark-muted);
+  --text-faint:#8F8377;
+  --border-hairline:#3A332B;
+  --border-soft:#332C25;
+  --action-secondary-bg:transparent;
+  --action-secondary-fg:var(--paper);
+  --action-ghost-hover:#2C251E;
+  --chart-track:#332C25;
+}
