@@ -35,7 +35,7 @@ export async function exchangePublicTokenAction(
 ): Promise<ExchangeResult> {
   try {
     const summary = await getAggregator().exchangePublicToken(publicToken);
-    revalidatePath("/");
+    revalidatePath("/dev/plaid-spike");
     return { ok: true, itemId: summary.itemId };
   } catch (error: unknown) {
     return {
@@ -63,7 +63,7 @@ export async function observeAction(formData: FormData): Promise<void> {
     captures,
     observedAt: new Date().toISOString(),
   });
-  revalidatePath("/");
+  revalidatePath("/dev/plaid-spike");
 }
 
 export async function connectionsAction() {
@@ -90,5 +90,5 @@ export async function sandboxLinkAction(): Promise<ExchangeResult> {
 /** Void form wrapper for the sandbox shim, so it can drive a plain <form>. */
 export async function sandboxLinkFormAction(): Promise<void> {
   await sandboxLinkAction();
-  revalidatePath("/");
+  revalidatePath("/dev/plaid-spike");
 }

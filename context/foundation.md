@@ -3,6 +3,7 @@
 > **Status:** v4 — **converged.** Last updated 2026-09-01. Changes from v3: **Q3b resolved positive** — the FedEx/Vanguard 401k *does* return transactions, so the match layer survives the holdings failure (§11). Match inference upgraded from ratio-detection to **differential diagnosis** (§5) after research showed absence of a paired deposit has at least five distinct causes. New §7 #16 (never infer a negative from missing data) and **F8, the "turn the match on" walkthrough — now the product's highest-priority flow** (§6). Employer status corrected (§2). Formula library seeded (§7 #12). **No blocking questions remain. Q4, Q6, Q7 ride as known-open — none block building.**
 > **v4.1 (2026-09-01):** clarified "one surface" → "one platform" in §0 and §6 (it was misread as single-page); added §12 Q8, the app's page structure.
 > **v4.2 (2026-09-01):** §7 #9 clarified and §7 #9a added — a root `AGENTS.md` router exists and is distinct from the team-mode collaboration file #9 rejected.
+> **v4.3 (2026-09-04):** §7 #17 added and §12 Q8 resolved — dashboard-first app shape, settled before the first UI screen (spec 0003).
 > Source of truth. Every other file references this; none restate it. If any file disagrees with this one, this one wins.
 > Codename `FINBUDDY` is a placeholder until the name is locked — find-and-replace when it is.
 
@@ -24,7 +25,7 @@ The forcing function. Every scope argument resolves here first.
 
 **Implications — not negotiable without revisiting this section:**
 
-- **One platform only.** A responsive web app — no native mobile app, no browser extension, no email digest. *This constrains how many surfaces get built and maintained; it says nothing about how many pages or routes the web app has (§12 Q8).*
+- **One platform only.** A responsive web app: no native mobile app, no browser extension, no email digest. *This constrains how many surfaces get built and maintained; the app's shape within it is dashboard-first (§7 #17).*
 - **No always-on infrastructure.** Anything needing a background worker, cron job, or warm server is deferred by default. This constrains what "proactive" means in v1 (§6).
 - **Depth over breadth.** One flow done excellently beats five half-built ones. At 10 hrs/week, breadth is how this dies.
 - **Solo system shape.** One `progress-log.md` with inline entries. No collaboration layer — no `COLLAB.md`, no CI progress guard (§7 #9). *(A thin root `AGENTS.md` router does exist — §7 #9a; different file, different job.)*
@@ -143,7 +144,7 @@ A separate wrinkle: **true-up** payments. Some plans reconcile the annual match 
 
 ## §6 Core flows & surfaces
 
-**Platform:** a responsive web app, and nothing else in v1 (§0). **How the flows below are arranged into pages is not decided — see §12 Q8.** `architecture.md` §3 assumes multiple routes; the shape is a design decision, not an architectural one.
+**Platform:** a responsive web app, and nothing else in v1 (§0). **The app's shape is dashboard-first (§7 #17):** you land on your money, Fin is a panel you open. `architecture.md` §3 assumes multiple routes; the shape is a design decision, not an architectural one.
 
 | # | Flow | Note |
 |---|---|---|
@@ -185,6 +186,7 @@ Other files cite these by number (`foundation.md §7 #5`).
 | 14 | **[LOCKED]** Forward projections allowed **only as clearly-labeled illustrative hypotheticals** — *"if this returned 7% a year, which is not a prediction, $100 becomes $101.75 in 3 months"* | The user's own question ("in 3 months would I gain a dollar?") is a projection; refusing to answer it is its own failure. Labeling keeps it an illustration rather than a forecast | Silent projections (imply prediction); refusing projections entirely (leaves the real question unanswered) |
 | 15 | **[LOCKED]** **Per-account capability tiers.** Each linked account stores which of `balance` / `holdings` / `transactions` it actually returns, discovered at link time. Features are gated on capabilities, and missing capability is surfaced honestly (§4 #7) | Forced by evidence: the FedEx/Vanguard 401k returns balance but not holdings (§11 — Q3, resolved). Provider depth varies and is outside our control — modelling it explicitly is the only honest option | Assuming uniform data depth — produces blank screens, false zeros, and features that silently do nothing |
 | 16 | **[LOCKED]** **Never infer a negative from missing data.** Detecting a match is high-confidence; detecting its *absence* is not. Any "you are not being matched" conclusion must be surfaced as a ranked differential with a question (§5), never as a finding | Research established at least five distinct causes for a single unpaired deposit — including not-yet-eligible and annual lump-sum timing — with opposite correct responses. Asserting "no match" wrongly is the single most damaging error the product can make: it would tell a user to act on a problem they do not have | Treating absence of a paired deposit as evidence of no match — the naive implementation, and wrong |
+| 17 | **[LOCKED — v4.3, resolves §12 Q8]** **Dashboard-first app shape.** The signed-in product opens on the user's money (balance, what they own, what was noticed); Fin is a panel/composer the user opens to ask, not the front door | A beginner who does not yet know the questions to ask (§2) bounces off a blank chat prompt; leading with what the tool noticed serves F6/F7/F8 (proactive surfacing) and matches the design export's own UI kit | Chat-first (Fin as the app — intimidating for this audience); hybrid home (more to build for no clear first-screen gain) |
 
 ---
 
@@ -275,13 +277,11 @@ None blocking. The foundation is converged; these ride alongside the build.
 
 **Q5b — Is FedEx confirmed as a current employer?** Inferred in v4 from weekly ongoing contributions (§2), correcting v1–v3. If wrong, F4 returns to priority and F8's premise changes. **Cheap to confirm; assumed until contradicted.**
 
-**Q8 — What shape is the app?** Chat-first (the buddy is the app; accounts sit behind it), dashboard-first (you land on what it noticed; chat is a panel), or a hybrid home surface that leads with findings and takes a question. Consequential for the design system and for which flow feels primary — F5 argues for chat-first, F7/F8 argue for dashboard-first. **Should be settled before the UI trio is generated**, not discovered by building. Not blocking anything else.
-
 **Q6 — Retention.** Literacy tools have a one-time-use problem: you learn the thing, you leave. F8 sharpens the question rather than answering it — once the match is turned on, what brings someone back? Not blocking (§3's bar is a one-time outcome), but it decides whether §7 #1 is ever worth acting on.
 
 **Q7 — The real product name.** `FINBUDDY` is a placeholder. Locking it later is a find-and-replace; leaving it ambiguous in code is not.
 
-*(v1 Q1 → §7 #11. v1 Q2 → §7 #4. v1 Q5 → §7 #12. v2 Q3 → §11 + §7 #15. v2 Q5 → §7 #14. v3 Q3b → resolved positive, §5 + §11.)*
+*(v1 Q1 → §7 #11. v1 Q2 → §7 #4. v1 Q5 → §7 #12. v2 Q3 → §11 + §7 #15. v2 Q5 → §7 #14. v3 Q3b → resolved positive, §5 + §11. Q8 → §7 #17, dashboard-first.)*
 
 ## Appendix — research grounding
 

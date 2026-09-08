@@ -32,6 +32,11 @@ This is mandatory, in the same way reading the context files before writing code
 
 ## Entries
 
+### 2026-09-08 · feature · "What you own" screen, the first real UI (spec 0003)
+**Area:** app, components/ui, lib/view
+**What:** Built the first real screen rendering the insight engine's output in the design system. Ported 9 components from the export to `components/ui/` (Card, Rule, Badge, Wordmark, Icon, Stat, AllocationBar, HoldingRow, TopNav), wired the design-system tokens into `app/globals.css`, added a pure view-model builder (`lib/view/what-you-own.ts`) and format helpers (`lib/format.ts`), and built the dashboard-first screen at `app/page.tsx`. Also resolved foundation §12 Q8 → §7 #17 (dashboard-first app shape).
+**Notes:** Facade slice: renders the committed fixture through the real engine; live data is a later slice. The missing-capability state (foundation §4 #7) is built and visible (the 401k shows balance + "we can't see inside" rather than a blank). No arithmetic in the view (AC-6/AC-10): all conversion is in lib/format + lib/view; AllocationBar uses flex-grow, not division. **Deviation:** the spec said remove the spike page; instead it was relocated to `/dev/plaid-spike` because spec 0001 task 9 (the real Plaid observation) is unrun and needs that UI. Ran the full gate: /check verify (10/10 ACs, green), /check review on Sonnet (approve with nits; 1 major + 3 minors + 1 nit fixed), /test (33 passing, 11 new). Spec 0003 → Accepted. Committed locally (no remote).
+
 ### 2026-09-01 · feature · Insight engine keystone built, verified, tested (spec 0002)
 **Area:** lib/insights, lib/types
 **What:** Built the keystone (foundation.md §9): the provider-neutral domain model (`lib/types/`) and the pure, synchronous insight engine (`lib/insights/`). Ships two insights, composition ("what do I own", grouped by security type) and cash drag (uninvested cash). Raw Plaid → domain mapping in `lib/aggregator/plaid/map.ts`, validated against the committed real fixtures. Set up Vitest (first test runner in the project).

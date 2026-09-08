@@ -53,7 +53,7 @@ Run this in the coding agent once the export is committed. It reads the actual e
 
 ## §3 Open before the trio is generated
 
-**🕗 Q8 — the app's shape** (`foundation.md` §12 Q8). Chat-first, dashboard-first, or a hybrid home surface. This decides which flow the design system treats as primary and how much of it is conversational — settle it before generating `ui-rules.md`, not after.
+**✅ Q8 — the app's shape** is resolved: **dashboard-first** (`foundation.md` §7 #17). The signed-in product opens on the user's money; Fin is a panel, not the front door.
 
 **🕗 The aesthetic direction** — below.
 

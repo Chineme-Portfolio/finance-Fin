@@ -30,7 +30,7 @@ Low-to-middle-income earners, roughly 20s–40s, financially motivated but not f
 
 Web only — one responsive web app. No mobile app, no extension, no email. (`foundation.md` §0 — the constraints are 5–15 hrs/week and near-zero budget.)
 
-**How it's arranged into pages is not decided** — chat-first, dashboard-first, or hybrid (`foundation.md` §12 Q8).
+**Shape: dashboard-first** — you land on your money; Fin is a panel you open (`foundation.md` §7 #17).
 
 ## Core flows
 

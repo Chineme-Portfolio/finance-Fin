@@ -2,13 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "FINBUDDY spike",
-  description: "Plaid read spike. Local only, never deploy.",
+  title: "FINBUDDY",
+  description: "See what you actually own, in plain words.",
 };
 
-// Deliberately unstyled. Spec 0001 keeps this page undesigned so it does not
-// pre-empt the open design decisions (foundation.md sections 12 Q8 and the
-// aesthetic direction in design-handoff.md).
 export default function RootLayout({
   children,
 }: {
@@ -16,7 +13,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Lucide UMD, required by the Icon component (ui-tokens.md §5).
+            It defines window.lucide, which Icon polls for. Pinned version. */}
+        <script
+          src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.js"
+          async
+        />
+      </body>
     </html>
   );
 }

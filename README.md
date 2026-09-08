@@ -87,4 +87,4 @@ The things that must never happen. Each is load-bearing; each has a file that ex
 
 ## Open questions
 
-Non-blocking; tracked in `foundation.md` §12. Briefly: whether SoFi returns holdings via Plaid (Q4), whether Plaid matches Credit Karma's depth on the FedEx plan (Q4b), confirmation that FedEx is a current employer (Q5b), retention (Q6), the real product name (Q7), and **the app's shape — chat-first, dashboard-first, or hybrid (Q8), which should be settled before any UI work**.
+Non-blocking; tracked in `foundation.md` §12. Briefly: whether SoFi returns holdings via Plaid (Q4), whether Plaid matches Credit Karma's depth on the FedEx plan (Q4b), confirmation that FedEx is a current employer (Q5b), retention (Q6), and the real product name (Q7). (Q8, the app's shape, is resolved: dashboard-first, `foundation.md` §7 #17.)
