@@ -41,24 +41,24 @@ export interface AccountCapability {
   observedAt: string;
 }
 
-/**
- * A live connection. Server memory only.
- * The access token is standing read access to someone's financial accounts,
- * not a one time snapshot (security.md section 3), so it never leaves the server,
- * never reaches a log, and never touches disk.
- */
-export interface LinkedConnection {
-  itemId: string;
-  accessToken: string;
-  institutionName: string;
-  linkedAt: string;
-}
-
-/** The safe view of a connection. Deliberately has no access token field. */
+/** The safe view of a linked item. Deliberately has no access token field. */
 export interface LinkedItemSummary {
   itemId: string;
   institutionName: string;
   linkedAt: string;
+}
+
+/**
+ * The result of exchanging a public token: a summary plus the access token,
+ * returned to a SERVER SIDE caller only (the lib/sync orchestration, which
+ * hands the token straight to Vault via lib/db). The access token is standing
+ * read access to someone's financial accounts, not a one time snapshot
+ * (security.md section 3), so it never leaves the server, never reaches a log,
+ * and never touches disk. The client facing shape is ExchangeResult, which has
+ * no token field.
+ */
+export interface ExchangedItem extends LinkedItemSummary {
+  accessToken: string;
 }
 
 /**
@@ -93,8 +93,14 @@ export interface Aggregator {
   /** Which provider environment this is pointed at. Shown so a run is never ambiguous. */
   environmentName(): string;
   createLinkToken(): Promise<string>;
-  exchangePublicToken(publicToken: string): Promise<LinkedItemSummary>;
-  fetchAccountData(itemId: string): Promise<AccountDataResult>;
+  /** Returns the access token to its server side caller (spec 0005); the caller persists it to Vault. */
+  exchangePublicToken(publicToken: string): Promise<ExchangedItem>;
+  /**
+   * Fetch a linked item's data using its access token directly (spec 0005). The
+   * token is passed in, not looked up from a store: the aggregator holds no
+   * connection state, and Vault is the token's single durable home.
+   */
+  fetchAccountData(accessToken: string): Promise<AccountDataResult>;
 }
 
 /** Result shapes shared by the Server Actions and any link widget. One source of truth. */

@@ -1,12 +1,11 @@
 import "server-only";
 import { CountryCode, Products } from "plaid";
 import { plaidClient, plaidEnvName, plaidErrorCode } from "./client";
-import { getConnection, saveConnection } from "../connection-store";
 import type {
   AccountCapability,
   AccountDataResult,
   Aggregator,
-  LinkedItemSummary,
+  ExchangedItem,
   ObservedTransaction,
   ProductOutcome,
 } from "../types";
@@ -134,35 +133,25 @@ export function createPlaidAggregator(): Aggregator {
       return response.data.link_token;
     },
 
-    async exchangePublicToken(publicToken: string): Promise<LinkedItemSummary> {
-      // The public token is used exactly once and then dropped. It is never
-      // stored and never returned (security.md section 3).
+    async exchangePublicToken(publicToken: string): Promise<ExchangedItem> {
+      // The public token is used exactly once and then dropped. The access token
+      // is returned to the server side caller (lib/sync), which hands it straight
+      // to Vault; it is never stored here and never returned to a client
+      // (security.md section 3).
       const response = await plaidClient().itemPublicTokenExchange({
         public_token: publicToken,
-      });
-      const linkedAt = new Date().toISOString();
-      saveConnection({
-        itemId: response.data.item_id,
-        accessToken: response.data.access_token,
-        institutionName: "unknown",
-        linkedAt,
       });
       return {
         itemId: response.data.item_id,
         institutionName: "unknown",
-        linkedAt,
+        linkedAt: new Date().toISOString(),
+        accessToken: response.data.access_token,
       };
     },
 
-    async fetchAccountData(itemId: string): Promise<AccountDataResult> {
-      const connection = getConnection(itemId);
-      if (!connection) {
-        throw new Error(
-          `plaid.fetchAccountData: no live connection for item ${itemId}. The server restarted, so relink.`,
-        );
-      }
+    async fetchAccountData(accessToken: string): Promise<AccountDataResult> {
       const client = plaidClient();
-      const token = connection.accessToken;
+      const token = accessToken;
       const window = historyWindow();
 
       const holdings = await callWithRetry(async () => {

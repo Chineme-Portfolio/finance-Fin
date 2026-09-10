@@ -3,18 +3,20 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { mapHoldingsResponseToDomain } from "@/lib/aggregator";
 import type { AccountCapability } from "@/lib/aggregator";
+import { getAccountsForUser, getHoldingsForAccount } from "@/lib/db";
 import { deriveInsights } from "@/lib/insights";
 import type { Account, Holding, Insight } from "@/lib/types";
 
 /**
- * The view model for the "what you own" screen. Pure over its one input (the
- * committed fixture it reads); it does the mapping and runs the engine, but it
+ * The view model for the "what you own" screen. It maps and runs the engine, but
  * performs no financial arithmetic of its own beyond the explicit, named
  * portfolio-total helper below (spec 0003 AC-6, foundation.md §4 #1).
  *
- * DEMO DATA. This renders the committed real fixture from spec 0001. When live
- * data and persistence land, replace `loadWhatYouOwn` with the live source and
- * remove the capability strip below (spec 0003 Follow-up).
+ * `loadWhatYouOwnLive` (spec 0005) is the real path the screen uses: it reads the
+ * user's persisted accounts and holdings from lib/db and runs the engine over
+ * them. Real per-account capabilities drive the missing-capability state; there
+ * is no demo strip. `loadWhatYouOwn` (the fixture path below) is kept only for
+ * the view-model unit test; it is no longer on the render path.
  */
 
 export interface AccountView {
@@ -70,6 +72,38 @@ export function portfolioTotalMinor(accounts: AccountView[]): number {
     }
     return sum + (view.account.balanceMinor ?? 0);
   }, 0);
+}
+
+/**
+ * The live view model (spec 0005): read the user's persisted accounts and
+ * holdings from lib/db and run the engine over them. Real capabilities drive the
+ * missing-capability state (foundation.md §4 #7, §7 #15); no demo strip. Only
+ * investment accounts appear (this screen is about what you own, not spending),
+ * and only accounts with something to show: holdings to break down, or the
+ * balance-only state that a real gap (like the FedEx 401k) produces.
+ */
+export async function loadWhatYouOwnLive(): Promise<WhatYouOwnView> {
+  const accounts = await getAccountsForUser();
+  const investmentAccounts = accounts.filter((a) => INVESTMENT_TYPES.has(a.type));
+
+  const views: AccountView[] = await Promise.all(
+    investmentAccounts.map(async (account) => {
+      const seesHoldings = account.capabilities.includes("holdings");
+      // Positive-value holdings only, matching what the engine counts toward the
+      // composition and total (composition.ts excludes value <= 0), so the row
+      // list, the bar, and the total agree (foundation.md §4 #3).
+      const accountHoldings = seesHoldings
+        ? (await getHoldingsForAccount(account.id)).filter((h) => h.valueMinor > 0)
+        : [];
+      const insights = seesHoldings
+        ? deriveInsights({ accounts: [account], holdings: accountHoldings, contributionEvents: [], planFacts: [] })
+        : [];
+      return { account, insights, holdings: accountHoldings, seesHoldings };
+    }),
+  );
+
+  const shown = views.filter((v) => v.holdings.length > 0 || !v.seesHoldings);
+  return { accounts: shown, portfolioTotalMinor: portfolioTotalMinor(shown) };
 }
 
 export function loadWhatYouOwn(): WhatYouOwnView {

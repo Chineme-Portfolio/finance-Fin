@@ -1,4 +1,4 @@
-import { loadWhatYouOwn } from "@/lib/view/what-you-own";
+import { loadWhatYouOwnLive } from "@/lib/view/what-you-own";
 import type { AccountView } from "@/lib/view/what-you-own";
 import type { Insight } from "@/lib/types";
 import { formatMoney, formatBps, minorToMajorNumber } from "@/lib/format";
@@ -13,16 +13,17 @@ import { HoldingRow } from "@/components/ui/HoldingRow";
 import { TopNav } from "@/components/ui/TopNav";
 
 /**
- * The "what you own" screen (spec 0003). A React Server Component: it loads the
- * view model (the committed fixture through the real engine) and renders it in
- * the design system. It computes no financial figure; every number comes from an
- * Insight or the pure lib helpers (foundation.md §4 #1, spec 0003 AC-6).
+ * The "what you own" screen (spec 0003, live data in spec 0005). A React Server
+ * Component: it loads the view model from the database through the real engine
+ * and renders it in the design system. It computes no financial figure; every
+ * number comes from an Insight or the pure lib helpers (foundation.md §4 #1,
+ * spec 0003 AC-6).
  *
  * Dashboard-first shell (foundation.md §7 #17): you land on your money.
  */
 
-// Rendered per request: the data source becomes live (a server action / DB)
-// in the next slice, so the route is kept dynamic rather than statically cached.
+// Rendered per request: the data source is live (lib/db), so the route is kept
+// dynamic rather than statically cached.
 export const dynamic = "force-dynamic";
 
 function accountLabel(type: string): string {
@@ -118,8 +119,36 @@ function AccountSection({ view }: { view: AccountView }) {
   );
 }
 
-export default function Page() {
-  const view = loadWhatYouOwn();
+function EmptyState() {
+  // No account linked yet (spec 0005 AC-4): a plain prompt, never a blank, a
+  // crash, or fake data. The link surface is the dev spike page for now (UI is
+  // deferred by preference).
+  return (
+    <Card padding="var(--pad-card-lg)">
+      <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+        <span style={{ color: "var(--text-faint)", flex: "none", marginTop: 2 }}>
+          <Icon name="info" size={18} />
+        </span>
+        <div>
+          <h2 style={{ fontSize: "var(--title-l-size)", fontWeight: 600, fontFamily: "var(--font-sans)" }}>
+            No account linked yet
+          </h2>
+          <p style={{ marginTop: 8, color: "var(--text-muted)", fontSize: "var(--body-m-size)", maxWidth: "var(--measure-narrow)" }}>
+            Link an investment account to see what you own. You can link one from the{" "}
+            <a href="/dev/plaid-spike" style={{ color: "var(--text)", textDecoration: "underline" }}>
+              link page
+            </a>
+            . FINBUDDY reads your balances and holdings; it cannot move money, place trades, or change your plan.
+          </p>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+export default async function Page() {
+  const view = await loadWhatYouOwnLive();
+  const hasAccounts = view.accounts.length > 0;
 
   return (
     <>
@@ -141,15 +170,18 @@ export default function Page() {
         </header>
 
         <section style={{ display: "flex", flexDirection: "column", gap: "var(--gap-stack)" }}>
-          {view.accounts.map((v) => (
-            <AccountSection key={v.account.id} view={v} />
-          ))}
+          {hasAccounts ? (
+            view.accounts.map((v) => <AccountSection key={v.account.id} view={v} />)
+          ) : (
+            <EmptyState />
+          )}
         </section>
 
-        <p style={{ color: "var(--text-faint)", fontSize: "var(--caption-size)", maxWidth: "var(--measure-prose)" }}>
-          Showing example account data. FINBUDDY reads your balances and holdings; it cannot move money, place trades, or
-          change your plan.
-        </p>
+        {hasAccounts ? (
+          <p style={{ color: "var(--text-faint)", fontSize: "var(--caption-size)", maxWidth: "var(--measure-prose)" }}>
+            FINBUDDY reads your balances and holdings; it cannot move money, place trades, or change your plan.
+          </p>
+        ) : null}
       </main>
     </>
   );

@@ -5,14 +5,17 @@
  * this Link + fetch + capture flow. Delete once task 9 is done and live linking
  * has its own UI. Deliberately unstyled.
  */
-import { getAggregator, listConnections } from "@/lib/aggregator";
+import { getAggregator } from "@/lib/aggregator";
 import { getObservation } from "@/lib/aggregator/observation-store";
 import type { ProductOutcome } from "@/lib/aggregator";
+import { listLinkedItems } from "@/lib/db";
 import { PlaidLinkButton } from "@/lib/aggregator/plaid/link-button";
 import {
   createLinkTokenAction,
-  exchangePublicTokenAction,
+  linkAccountAction,
   observeAction,
+  refreshItemFormAction,
+  unlinkItemFormAction,
   sandboxLinkFormAction,
 } from "@/app/actions";
 
@@ -41,8 +44,8 @@ function money(minor: number, currency: string | null): string {
   return `${(minor / 100).toFixed(2)} ${currency ?? ""}`.trim();
 }
 
-export default function Page() {
-  const connections = listConnections();
+export default async function Page() {
+  const items = await listLinkedItems();
   const env = getAggregator().environmentName();
 
   return (
@@ -55,9 +58,10 @@ export default function Page() {
       <p>Local only. Never deploy this: there is no authentication.</p>
 
       <h2>Link an account</h2>
+      <p>Linking now persists to the database and Vault. It survives a restart.</p>
       <PlaidLinkButton
         createLinkToken={createLinkTokenAction}
-        exchangePublicToken={exchangePublicTokenAction}
+        exchangePublicToken={linkAccountAction}
       />
 
       {env === "sandbox" ? (
@@ -70,19 +74,29 @@ export default function Page() {
         </form>
       ) : null}
 
-      {connections.length === 0 ? (
-        <p>No live connections. A server restart clears them, which is expected.</p>
+      {items.length === 0 ? (
+        <p>No linked accounts yet. Link one above; it will persist.</p>
       ) : null}
 
-      {connections.map((connection) => {
-        const observation = getObservation(connection.itemId);
+      {items.map((item) => {
+        const observation = getObservation(item.plaidItemId);
         return (
-          <section key={connection.itemId}>
-            <h2>Item {connection.itemId}</h2>
-            <form action={observeAction}>
-              <input type="hidden" name="itemId" value={connection.itemId} />
-              <button type="submit">Fetch holdings and investment transactions</button>
-            </form>
+          <section key={item.plaidItemId}>
+            <h2>Item {item.plaidItemId}</h2>
+            <div style={{ display: "flex", gap: 8 }}>
+              <form action={observeAction}>
+                <input type="hidden" name="itemId" value={item.plaidItemId} />
+                <button type="submit">Fetch holdings and investment transactions</button>
+              </form>
+              <form action={refreshItemFormAction}>
+                <input type="hidden" name="itemId" value={item.plaidItemId} />
+                <button type="submit">Refresh (re fetch and re persist)</button>
+              </form>
+              <form action={unlinkItemFormAction}>
+                <input type="hidden" name="itemId" value={item.plaidItemId} />
+                <button type="submit">Unlink</button>
+              </form>
+            </div>
 
             {!observation ? null : (
               <>

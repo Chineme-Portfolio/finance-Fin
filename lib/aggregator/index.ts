@@ -17,4 +17,3 @@ export function getAggregator(): Aggregator {
 
 export * from "./types";
 export { mapHoldingsResponseToDomain } from "./plaid/map";
-export { listConnections } from "./connection-store";
