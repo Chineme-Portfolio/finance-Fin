@@ -29,7 +29,7 @@
 
 ---
 
-## Supabase (Postgres + Auth) — ⬜ not yet installed
+## Supabase (Postgres + Auth) — ✅ `@supabase/supabase-js` 2.116.0, `@supabase/ssr` 0.12.7 (installed 2026-09-08, spec 0004)
 
 **Why:** `foundation.md` §7 #6 — the free tier fits, and bundled auth + RLS make the open-up path (§7 #1) a config change rather than a migration. Neon was the runner-up on idle economics; auth + RLS decided it.
 
@@ -42,6 +42,8 @@
 - **RLS policies need impersonation testing.** Untested policies are assumptions (`security.md` §4).
 - **`pgsodium` is pending deprecation** — use Vault, which is self-contained and does not depend on it.
 - **Free tier pauses after ~1 week of inactivity** (`foundation.md` §10). Expect a cold start; do not mistake it for a bug.
+- **PostgREST serialises `bigint` columns as JSON strings** (to avoid JS float-precision loss). Money is stored as `bigint` minor units, so the `lib/db/` mapping layer must parse these back to `number` (spec 0004 AC-7). A row's `value_minor` arrives as a string; `Number(...)` it at the boundary.
+- **Supabase Vault** stores each Plaid access token as a secret; the row holds only the secret id (`security.md` §3). Deletion of an item and its token is one `security definer` RPC so it cannot half-fail (spec 0004 AC-8).
 
 ---
 
@@ -89,7 +91,8 @@
 | `plaid` (official Node SDK) | Aggregator — `lib/aggregator/plaid/` only | ✅ 46.0.0 |
 | `react-plaid-link` | Plaid Link in the browser — the one client side Plaid package | ✅ 5.0.0 |
 | `server-only` | Build time guard: makes a server module fail loudly if it is ever imported into client code. Enforces the "access token never reaches the browser" rule structurally rather than by discipline (`security.md` §3) | ✅ 0.0.1 |
-| `@supabase/supabase-js`, `@supabase/ssr` | DB + auth client | ⬜ not yet needed |
+| `@supabase/supabase-js` | DB + Vault client | ✅ 2.116.0 |
+| `@supabase/ssr` | Cookie-based session client for Next.js | ✅ 0.12.7 |
 | LLM provider SDK | `lib/llm/` only | ⬜ 🕗 TBD with provider |
 | A schema validator (e.g. `zod`) | Boundary parsing (`code-standards.md` §2) | ⬜ 🕗 pin at install |
 | A test runner | `lib/insights/` coverage (`code-standards.md` §8) | ⬜ 🕗 TBD |

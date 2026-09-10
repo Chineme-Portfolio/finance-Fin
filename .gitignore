@@ -22,5 +22,12 @@ npm-debug.log*
 .vercel
 next-env.d.ts
 
+# Personal, per-machine Claude Code settings (not shared).
+.claude/settings.local.json
+
+# Vendored agent skills: re-fetchable from skills-lock.json, not committed.
+.agents/
+.claude/skills/
+
 # TypeScript incremental build info
 *.tsbuildinfo

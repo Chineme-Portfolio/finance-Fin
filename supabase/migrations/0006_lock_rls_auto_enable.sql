@@ -1,0 +1,11 @@
+-- 0006_lock_rls_auto_enable.sql — spec 0004 hardening.
+--
+-- rls_auto_enable() is a Supabase-installed EVENT TRIGGER function (it auto-enables
+-- row level security on any new table in the public schema). It is NOT one of this
+-- slice's functions. The security advisor flags it as callable by anon/authenticated
+-- because they hold the default PUBLIC execute grant. An event-trigger function
+-- cannot actually be invoked usefully over the REST RPC path (Postgres only fires it
+-- from the DDL event trigger), so this is low risk, but we revoke the grant anyway to
+-- keep the advisor clean and follow least privilege: nothing but the trigger machinery
+-- should reach it.
+revoke execute on function public.rls_auto_enable() from anon, authenticated;
