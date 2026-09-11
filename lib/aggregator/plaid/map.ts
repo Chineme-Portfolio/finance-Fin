@@ -3,6 +3,7 @@ import type {
   Account,
   AccountType,
   Capability,
+  ContributionEvent,
   Holding,
   SecurityInfo,
   SecurityType,
@@ -131,7 +132,45 @@ export function toDomainHoldings(
   });
 }
 
-import type { AccountCapability } from "../types";
+import type { AccountCapability, ObservedTransaction } from "../types";
+
+/**
+ * Provider transaction subtypes that mean cash paid INTO the account. Only these
+ * unambiguous inflows become contribution events (spec 0006 AC-2). A bare
+ * "transfer" is deliberately NOT here: its direction lives in the amount sign, not
+ * the subtype, so including it would risk persisting a transfer out as a
+ * contribution. This set is provisional until the real 401k shape is observed
+ * (spec 0001 task 9).
+ */
+const CONTRIBUTION_SUBTYPES: ReadonlySet<string> = new Set(["contribution", "deposit"]);
+
+/**
+ * Select the cash contributions and deposits from observed investment
+ * transactions and map them to domain ContributionEvents (spec 0006). This is the
+ * one place that knows which Plaid transaction subtypes mean "money paid in"
+ * (foundation section 7 #8), so lib/sync and lib/db never learn a Plaid shape.
+ *
+ * Stored raw: source is always "unknown". Classifying a deposit as employee vs
+ * employer match is the deferred match engine's job, never done or stored here
+ * (foundation section 7 #7, #16). amountMinor is the POSITIVE magnitude paid in:
+ * the provider credits a deposit as a signed amount that can be negative, so we
+ * normalise rather than pass the sign through, so a later sum is never polarity
+ * confused (spec 0006 AC-1).
+ */
+export function toContributionEvents(
+  transactions: ObservedTransaction[],
+): ContributionEvent[] {
+  return transactions
+    .filter((t) => t.subtype !== null && CONTRIBUTION_SUBTYPES.has(t.subtype.toLowerCase()))
+    .map((t) => ({
+      accountId: t.accountId,
+      date: t.date,
+      amountMinor: Math.abs(t.amountMinor),
+      currency: t.currency,
+      source: "unknown",
+      rawName: t.name,
+    }));
+}
 
 /** A raw Plaid holdings response, the parts the mapping reads. */
 interface RawHoldingsResponse {

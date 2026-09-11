@@ -1,7 +1,14 @@
 import "server-only";
 import { getAdminClient, currentUserId } from "./client";
 import { storeAccessToken } from "./tokens";
-import type { Account, Holding, Capability, AccountType, SecurityType } from "@/lib/types";
+import type {
+  Account,
+  Holding,
+  ContributionEvent,
+  Capability,
+  AccountType,
+  SecurityType,
+} from "@/lib/types";
 
 /**
  * Typed, user-scoped persistence for the domain model. Every query is stamped
@@ -98,6 +105,7 @@ export async function saveLinkedItem(input: {
   accessToken: string;
   accounts: Array<{ plaidAccountId: string } & Account>;
   holdings: Holding[];
+  contributionEvents?: ContributionEvent[];
 }): Promise<{ itemId: string }> {
   const db = getAdminClient();
   const userId = currentUserId();
@@ -174,6 +182,31 @@ export async function saveLinkedItem(input: {
       if (holdErr) throw new Error(`db.saveLinkedItem: holdings insert failed: ${holdErr.message}`);
     }
 
+    // Contribution events, keyed to accounts by the same plaid_account_id map as
+    // holdings (spec 0006). Stored raw: source stays whatever the mapper set, which
+    // is always "unknown" for now (classification is the deferred engine's job).
+    const contributionRows = (input.contributionEvents ?? []).map((ev) => {
+      const accountDbId = dbIdByDomainId.get(ev.accountId);
+      if (!accountDbId) {
+        throw new Error(`db.saveLinkedItem: contribution references unknown account ${ev.accountId}`);
+      }
+      return {
+        user_id: userId,
+        account_id: accountDbId,
+        date: ev.date,
+        amount_minor: ev.amountMinor,
+        currency: ev.currency,
+        source: ev.source,
+        raw_name: ev.rawName,
+      };
+    });
+    if (contributionRows.length > 0) {
+      const { error: contribErr } = await db.from("contribution_events").insert(contributionRows);
+      if (contribErr) {
+        throw new Error(`db.saveLinkedItem: contribution_events insert failed: ${contribErr.message}`);
+      }
+    }
+
     return { itemId };
   } catch (e) {
     // Best-effort cleanup so a partial save leaves no orphaned item or Vault token.
@@ -207,6 +240,38 @@ export async function getHoldingsForAccount(accountId: string): Promise<Holding[
     .eq("account_id", accountId);
   if (error) throw new Error(`db.getHoldingsForAccount: ${error.message}`);
   return (data as HoldingRow[]).map(rowToHolding);
+}
+
+interface ContributionRow {
+  account_id: string;
+  date: string;
+  amount_minor: string | number;
+  currency: string | null;
+  source: ContributionEvent["source"];
+  raw_name: string;
+}
+
+/** The raw contribution deposits persisted for an account (spec 0006), the read
+ * side of saveLinkedItem. The match engine will consume these; nothing reads them
+ * yet. Money comes back as a number (bigint parsed). */
+export async function getContributionEventsForAccount(
+  accountId: string,
+): Promise<ContributionEvent[]> {
+  const { data, error } = await getAdminClient()
+    .from("contribution_events")
+    .select("account_id, date, amount_minor, currency, source, raw_name")
+    .eq("user_id", currentUserId())
+    .eq("account_id", accountId)
+    .order("date", { ascending: true });
+  if (error) throw new Error(`db.getContributionEventsForAccount: ${error.message}`);
+  return (data as ContributionRow[]).map((r) => ({
+    accountId: r.account_id,
+    date: r.date,
+    amountMinor: toInt(r.amount_minor),
+    currency: r.currency,
+    source: r.source,
+    rawName: r.raw_name,
+  }));
 }
 
 /** Delete an item, its accounts/holdings (cascade), and its Vault token, atomically. */

@@ -1,5 +1,5 @@
 import "server-only";
-import { getAggregator, mapHoldingsResponseToDomain } from "@/lib/aggregator";
+import { getAggregator, mapHoldingsResponseToDomain, toContributionEvents } from "@/lib/aggregator";
 import type { AccountDataResult } from "@/lib/aggregator";
 import {
   saveLinkedItem,
@@ -47,6 +47,11 @@ async function persist(
   // which is exactly what saveLinkedItem keys holdings by.
   const accountsToSave = accounts.map((a: Account) => ({ ...a, plaidAccountId: a.id }));
 
+  // Contribution deposits (spec 0006). The adapter filters the observed
+  // transactions down to cash contributions and returns raw domain events
+  // (source "unknown"); events only exist for accounts that returned transactions.
+  const contributionEvents = toContributionEvents(result.transactions);
+
   const toReplace = existing === undefined ? await getItemByPlaidItemId(plaidItemId) : existing;
   if (toReplace) await deleteItem(toReplace.id);
 
@@ -56,6 +61,7 @@ async function persist(
     accessToken,
     accounts: accountsToSave,
     holdings,
+    contributionEvents,
   });
 }
 

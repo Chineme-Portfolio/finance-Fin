@@ -4,6 +4,7 @@ export {
   saveLinkedItem,
   getAccountsForUser,
   getHoldingsForAccount,
+  getContributionEventsForAccount,
   deleteItem,
 } from "./accounts";
 export { listLinkedItems, getItemByPlaidItemId, getItemToken } from "./items";

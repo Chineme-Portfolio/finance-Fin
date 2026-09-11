@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import type { Account, Holding } from "@/lib/types";
+import type { Account, Holding, ContributionEvent } from "@/lib/types";
 
 /**
  * Round-trip integration check for lib/db against the live Supabase project
@@ -62,7 +62,7 @@ describe.skipIf(!hasCreds)("lib/db round-trip against live Supabase (spec 0004)"
       type: "traditional_ira",
       subtype: "ira",
       linked: true,
-      capabilities: ["balance", "holdings"],
+      capabilities: ["balance", "holdings", "transactions"],
       balanceMinor: 21254, // $212.54
       currency: "USD",
     };
@@ -80,6 +80,14 @@ describe.skipIf(!hasCreds)("lib/db round-trip against live Supabase (spec 0004)"
       costBasisMinor: 13000,
       currency: "USD",
     };
+    const contribution: ContributionEvent = {
+      accountId: "rt-domain-acct-1",
+      date: "2026-01-15",
+      amountMinor: 50000, // $500 paid in, positive magnitude
+      currency: "USD",
+      source: "unknown",
+      rawName: "RT Payroll contribution",
+    };
 
     const { itemId } = await db.saveLinkedItem({
       plaidItemId: TEST_ITEM,
@@ -87,6 +95,7 @@ describe.skipIf(!hasCreds)("lib/db round-trip against live Supabase (spec 0004)"
       accessToken: "access-sandbox-FAKE-rt-token-2",
       accounts: [account],
       holdings: [holding],
+      contributionEvents: [contribution],
     });
     expect(typeof itemId).toBe("string");
 
@@ -106,9 +115,19 @@ describe.skipIf(!hasCreds)("lib/db round-trip against live Supabase (spec 0004)"
     expect(typeof holdings[0].valueMinor).toBe("number");
     expect(holdings[0].security.ticker).toBe("RTF");
 
-    // Delete the item; its account, holding, and Vault token go with it [AC-8].
+    // Read the contribution event back, money typed as number, source unknown [spec 0006 AC-6].
+    const events = await db.getContributionEventsForAccount(saved!.id);
+    expect(events).toHaveLength(1);
+    expect(events[0].amountMinor).toBe(50000);
+    expect(typeof events[0].amountMinor).toBe("number");
+    expect(events[0].source).toBe("unknown");
+    expect(events[0].rawName).toBe("RT Payroll contribution");
+
+    // Delete the item; its account, holding, contribution event, and Vault token
+    // go with it (cascade) [spec 0005 AC-8, spec 0006 AC-5].
     await db.deleteItem(itemId);
     const after = await db.getAccountsForUser();
     expect(after.find((a) => a.name === TEST_NAME)).toBeUndefined();
+    expect(await db.getContributionEventsForAccount(saved!.id)).toHaveLength(0);
   }, 30000);
 });

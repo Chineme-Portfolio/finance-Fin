@@ -1,8 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { toDomainAccounts, toDomainHoldings, mapHoldingsResponseToDomain } from "./map";
-import type { AccountCapability } from "../types";
+import {
+  toDomainAccounts,
+  toDomainHoldings,
+  mapHoldingsResponseToDomain,
+  toContributionEvents,
+} from "./map";
+import type { AccountCapability, ObservedTransaction } from "../types";
 
 // server-only is aliased to a no-op stub in vitest.config.ts so this pure
 // mapping module can be unit tested.
@@ -78,5 +83,61 @@ describe("raw Plaid -> domain mapping (spec 0002, AC-3)", () => {
     expect(holdings.every((h) => h.security.securityType !== "other")).toBe(true);
     // all money integers
     expect(holdings.every((h) => Number.isInteger(h.valueMinor))).toBe(true);
+  });
+});
+
+describe("toContributionEvents (spec 0006)", () => {
+  function txn(over: Partial<ObservedTransaction>): ObservedTransaction {
+    return {
+      accountId: "acct-1",
+      date: "2026-01-15",
+      amountMinor: 10000,
+      currency: "USD",
+      name: "Payroll contribution",
+      type: "cash",
+      subtype: "contribution",
+      ...over,
+    };
+  }
+
+  it("keeps only contributions and deposits; drops buy, sell, dividend, fee, and bare transfer [AC-2]", () => {
+    const events = toContributionEvents([
+      txn({ subtype: "contribution", name: "Employee contribution" }),
+      txn({ subtype: "deposit", name: "Deposit" }),
+      txn({ subtype: "buy", type: "buy", name: "Buy VTSAX" }),
+      txn({ subtype: "sell", type: "sell", name: "Sell VTSAX" }),
+      txn({ subtype: "dividend", type: "cash", name: "Dividend" }),
+      txn({ subtype: "account fee", type: "fee", name: "Fee" }),
+      txn({ subtype: "transfer", type: "transfer", name: "Transfer out" }),
+      txn({ subtype: null, name: "No subtype" }),
+    ]);
+    expect(events).toHaveLength(2);
+    expect(events.map((e) => e.rawName)).toEqual(["Employee contribution", "Deposit"]);
+  });
+
+  it("stores every event raw with source 'unknown' (no classification) [AC-1]", () => {
+    const events = toContributionEvents([txn({}), txn({ subtype: "deposit" })]);
+    expect(events.every((e) => e.source === "unknown")).toBe(true);
+  });
+
+  it("normalises a provider negative amount to a positive magnitude [AC-1]", () => {
+    // Plaid credits a deposit as a signed amount that can be negative.
+    const [event] = toContributionEvents([txn({ amountMinor: -25000 })]);
+    expect(event.amountMinor).toBe(25000);
+    expect(Number.isInteger(event.amountMinor)).toBe(true);
+  });
+
+  it("passes accountId, date, and currency straight through [AC-1]", () => {
+    const [event] = toContributionEvents([
+      txn({ accountId: "acct-9", date: "2025-12-01", currency: "USD" }),
+    ]);
+    expect(event.accountId).toBe("acct-9");
+    expect(event.date).toBe("2025-12-01");
+    expect(event.currency).toBe("USD");
+  });
+
+  it("matches subtype case-insensitively", () => {
+    const events = toContributionEvents([txn({ subtype: "CONTRIBUTION" })]);
+    expect(events).toHaveLength(1);
   });
 });

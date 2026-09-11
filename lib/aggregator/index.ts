@@ -16,4 +16,4 @@ export function getAggregator(): Aggregator {
 }
 
 export * from "./types";
-export { mapHoldingsResponseToDomain } from "./plaid/map";
+export { mapHoldingsResponseToDomain, toContributionEvents } from "./plaid/map";
