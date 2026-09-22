@@ -1,0 +1,31 @@
+/* Minimal element defaults. Consumers get these for free by linking styles.css. */
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg-page);
+  color:var(--text-body);
+  font-family:var(--font-sans);
+  font-size:var(--body-m-size);
+  line-height:var(--body-m-line);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:400;color:var(--text-strong);margin:0;letter-spacing:-0.02em}
+h1{font-size:var(--display-2-size);line-height:var(--display-2-line)}
+h2{font-size:var(--display-3-size);line-height:var(--display-3-line)}
+h3{font-size:var(--display-4-size);line-height:var(--display-4-line)}
+h4{font-family:var(--font-sans);font-weight:600;font-size:var(--title-m-size);line-height:var(--title-m-line);letter-spacing:0}
+p{margin:0;text-wrap:pretty}
+a{color:var(--text-link);text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{color:var(--text-link-hover)}
+b,strong{font-weight:600;color:var(--text-strong)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+::selection{background:var(--clay-200);color:var(--ink)}
+
+/* Utility primitives used across cards, kits and templates. */
+.fb-label{font-family:var(--font-sans);font-size:var(--label-size);line-height:var(--label-line);letter-spacing:var(--label-track);font-weight:var(--label-weight);text-transform:uppercase;color:var(--text-faint)}
+.fb-figure{font-family:var(--font-figure);font-variant-numeric:tabular-nums;letter-spacing:-0.02em;color:var(--text-strong)}
+.fb-wordmark{font-family:var(--font-display);text-transform:uppercase;letter-spacing:0.18em;font-size:16px;color:var(--text-strong)}
+.fb-rule{border:0;height:var(--rule-thickness);border-radius:var(--radius-pill);background:var(--rule-color);margin:0}
+.fb-prose{max-width:var(--measure-prose);font-size:var(--body-l-size);line-height:var(--body-l-line)}

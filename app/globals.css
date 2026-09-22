@@ -1,0 +1,15 @@
+/* Design-system tokens. The committed export at design-system/ is the source of
+   truth for values (ui-tokens.md §1); this imports the token layer so var(--...)
+   resolves app-wide. The chain pulls fonts, colours, type, spacing, effects, and
+   the element base defaults. */
+@import url("../design-system/source/tokens/fonts.css");
+@import url("../design-system/source/tokens/colors.css");
+@import url("../design-system/source/tokens/typography.css");
+@import url("../design-system/source/tokens/spacing.css");
+@import url("../design-system/source/tokens/effects.css");
+@import url("../design-system/source/tokens/base.css");
+
+/* Hide the horizontal scrollbar on the shell nav (it scrolls on narrow screens
+   but the bar itself is visual noise). */
+.fb-navscroll { scrollbar-width: none; -ms-overflow-style: none; }
+.fb-navscroll::-webkit-scrollbar { display: none; }

@@ -1,0 +1,36 @@
+# Secrets. Never commit. See context/security.md §2.
+.env
+.env.local
+.env*.local
+
+# Raw Plaid captures: real financial data, never committed.
+# See context/security.md §7 and spec 0001 AC-6.
+# Nested pattern so a write from an unexpected working directory is still ignored.
+**/captures/
+
+# Dependencies and build output
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Misc
+.DS_Store
+*.pem
+npm-debug.log*
+.vercel
+next-env.d.ts
+
+# Personal, per-machine Claude Code settings (not shared).
+.claude/settings.local.json
+
+# Vendored agent skills: re-fetchable from skills-lock.json, not committed.
+.agents/
+.claude/skills/
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# Local MCP server config (contains project refs; not for the public repo)
+.mcp.json

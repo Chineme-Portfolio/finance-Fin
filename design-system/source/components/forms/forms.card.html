@@ -1,0 +1,17 @@
+<!-- @dsCard group="Components" viewport="700x330" name="Forms" subtitle="Input, select, checkbox, radio (boxed), switch" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css"><script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.js"></script><script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script><script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script><script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script><script src="../../_ds_bundle.js"></script><style>body{padding:20px;background:var(--bg-page)}</style></head><body><div id="root"></div><script type="text/babel">
+const { Input, Select, Checkbox, Radio, Switch } = window.FINBUDDYDesignSystem_3b7855;
+function Demo(){const [v,setV]=React.useState("6");return <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
+<div style={{display:'flex',flexDirection:'column',gap:16}}>
+<Input label="Per paycheck" prefix="$" suffix="of $2,100" defaultValue="126" iconLeft={null}/>
+<Input label="Work email" iconLeft="mail" placeholder="you@company.com" error="We couldn't find a plan at that domain."/>
+<Select label="Account" options={["401(k) — Fidelity","Brokerage — Robinhood","Roth IRA — Vanguard"]}/>
+</div>
+<div style={{display:'flex',flexDirection:'column',gap:12}}>
+<Radio boxed label="6% — the full match" description="About $84 less per paycheck." checked={v==="6"} onChange={()=>setV("6")}/>
+<Radio boxed label="4% — halfway there" description="About $42 less per paycheck." checked={v==="4"} onChange={()=>setV("4")}/>
+<Checkbox label="Raise it 1% every January" description="Stops at 10%." defaultChecked/>
+<Switch label="Nudge me when the match changes" defaultChecked/>
+</div></div>}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script></body></html>

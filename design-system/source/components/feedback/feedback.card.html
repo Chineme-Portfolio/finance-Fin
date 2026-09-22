@@ -1,0 +1,18 @@
+<!-- @dsCard group="Components" viewport="700x360" name="Feedback" subtitle="Dialog, toast, tooltip, step progress, win moment" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css"><script src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.js"></script><script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script><script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script><script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script><script src="../../_ds_bundle.js"></script><style>body{padding:20px;background:var(--bg-page)}</style></head><body><div id="root"></div><script type="text/babel">
+const { Dialog, Toast, Tooltip, StepProgress, WinMoment, Button } = window.FINBUDDYDesignSystem_3b7855;
+function Demo(){return <div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:24,alignItems:'start'}}>
+<div style={{display:'flex',flexDirection:'column',gap:18}}>
+<StepProgress steps={["Link","Check","Choose","Done"]} current={2}/>
+<div style={{position:'relative',height:200,borderRadius:'var(--radius-md)',overflow:'hidden',background:'var(--bg-sunk)'}}>
+<Dialog width={400} title="Change your contribution to 6%?" onClose={()=>{}} footer={<><Button variant="ghost" size="sm">Not yet</Button><Button size="sm">Confirm</Button></>}>Your take-home pay drops about $84 a paycheck. Your employer starts adding $63.</Dialog>
+</div>
+<div style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'center'}}>
+<Toast tone="success" onClose={()=>{}}>Contribution updated to 6%.</Toast>
+<Tooltip content="The share of your pay you put in each period."><span style={{borderBottom:'1px dotted var(--ink-25)',fontSize:15}}>contribution rate</span></Tooltip>
+</div>
+</div>
+<WinMoment headline="Claimed" value="$1,240 a year" action={<Button variant="pop" size="sm">See what changes</Button>}>That is your employer's money, and it is now coming to you.</WinMoment>
+</div>}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script></body></html>

@@ -1,0 +1,34 @@
+:root{
+  --space-0:0px;
+  --space-1:2px;
+  --space-2:4px;
+  --space-3:8px;
+  --space-4:12px;
+  --space-5:16px;
+  --space-6:20px;
+  --space-7:24px;
+  --space-8:32px;
+  --space-9:40px;
+  --space-10:56px;
+  --space-11:72px;
+  --space-12:96px;
+  --space-13:128px;
+
+  /* Component rhythm */
+  --pad-card:24px;
+  --pad-card-lg:32px;
+  --pad-control-x:18px;
+  --pad-control-y:11px;
+  --gap-stack:16px;
+  --gap-section:40px;
+
+  /* Layout */
+  --page-max:1180px;
+  --page-gutter:32px;
+  --page-gutter-sm:20px;
+  --sidebar-w:236px;
+  --topbar-h:64px;
+  --control-h:42px;
+  --control-h-sm:34px;
+  --control-h-lg:50px;
+}

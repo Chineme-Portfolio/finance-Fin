@@ -1,0 +1,11 @@
+<!-- @dsCard group="Brand" viewport="700x200" name="Motion" subtitle="Rise and fade by default; spring only on toggles, dialogs and wins" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css"><style>body{margin:0;padding:18px 20px;background:var(--bg-page);font-family:var(--font-sans)}.r{display:flex;gap:12px;margin-bottom:14px}.r div{flex:1;background:var(--bg-surface);border-radius:var(--radius-md);border:1px solid var(--border-soft);padding:14px}.r b{display:block;font-family:var(--font-display);font-weight:400;font-size:22px;color:var(--text-strong);margin-bottom:2px}.r span{font-size:11.5px;color:var(--text-faint)}.demo{height:44px;border-radius:var(--radius-pill);background:var(--clay-500);width:10%;animation:grow 2.6s var(--ease-out) infinite}@keyframes grow{0%{width:8%}55%{width:100%}100%{width:100%}}</style></head><body>
+<div class="r">
+<div><b>90ms</b><span>instant · press</span></div>
+<div><b>150ms</b><span>fast · hover</span></div>
+<div><b>220ms</b><span>base · state change</span></div>
+<div><b>360ms</b><span>slow · enter</span></div>
+<div><b>900ms</b><span>count · figures</span></div>
+</div>
+<div class="demo"></div>
+<p style="font-size:12.5px;color:var(--text-faint);margin-top:10px">Easing: --ease-out (.2,.7,.3,1) everywhere; --ease-spring (.34,1.32,.5,1) for toggles, dialogs, win moments.</p></body></html>
