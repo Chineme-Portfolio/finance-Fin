@@ -6,7 +6,7 @@ _Steps derived from spec 0007 acceptance criteria. `/check verify` runs these; `
 
 - [ ] `npx vitest run lib/plans lib/insights` is green. The match arithmetic worked examples hold: tiered `[{10000,300},{5000,500}]` on $100,000 gives $3,000 at 3%, $4,000 at 5%, $4,000 at 10% (capped); `unclaimedMatchMinor` from 3% is $1,000; the simple and flat cap shapes compute correctly. → AC-3, AC-4, AC-7
 - [ ] Same run: a fractional cent input yields an exact integer minor unit; degenerate inputs (single tier, zero gross pay, zero contribution) return sensible integers, no crash, no float. → AC-3, AC-7
-- [ ] Same run: the catalog test confirms the FedEx entry is `verified: false` with a non empty note, and the two generic shapes are present and verified. → AC-5
+- [ ] Same run: the catalog test confirms the Northwind entry is `verified: false` with a non empty note, and the two generic shapes are present and verified. → AC-5
 - [ ] `npx tsc --noEmit` is clean, which also validates the `@ts-expect-error` in `lib/plans/catalog.test.ts`: a `verified: false` `CatalogEntry` with no `note` does not compile (honesty unrepresentable to break). → AC-5
 - [ ] Placement and purity: the arithmetic is in `lib/insights/match.ts`, the data and lookup in `lib/plans/`, and neither imports `lib/db`, `lib/aggregator`, `server-only`, or anything async. `lib/insights/match.ts` imports only the types from `@/lib/plans`. → AC-1
 - [ ] `npx next build` succeeds. → AC-1

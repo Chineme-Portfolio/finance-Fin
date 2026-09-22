@@ -54,7 +54,7 @@
 **How it's used here:** **Only inside `lib/aggregator/plaid/`** (§7 #8). Nothing outside that directory knows Plaid exists. It fills `accounts`, `holdings`, and `contribution_events`, and records each connection's capability tier (§7 #15).
 
 **Gotchas — the ones this project already hit:**
-- **Holdings and transactions are separate data products, and coverage differs per institution.** Confirmed first-party: the FedEx/Vanguard workplace plan returns balance and transactions but **not** holdings (`foundation.md` §11). Never assume uniform depth — store what each connection actually returned.
+- **Holdings and transactions are separate data products, and coverage differs per institution.** Confirmed first-party: the Northwind/the recordkeeper workplace plan returns balance and transactions but **not** holdings (`foundation.md` §11). Never assume uniform depth — store what each connection actually returned.
 - **Employer plans ≠ retail accounts.** A workplace 401k sits on a recordkeeping platform, separate from the provider's retail brokerage. Coverage for one says nothing about the other.
 - **Access can be revoked by the institution.** Principal did exactly this in 2025, breaking 401k sync for Mint, YNAB, and Monarch. There is no manual fallback (§7 #4) — handle it as an expected state (`code-standards.md` §6).
 - **`public_token` is single-use.** Exchange it server-side immediately, then discard. Never persist it.

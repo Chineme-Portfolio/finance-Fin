@@ -31,3 +31,6 @@ next-env.d.ts
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# Local MCP server config (contains project refs; not for the public repo)
+.mcp.json

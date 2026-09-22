@@ -1,6 +1,6 @@
 # FINBUDDY — Foundation
 
-> **Status:** v4 — **converged.** Last updated 2026-09-01. Changes from v3: **Q3b resolved positive** — the FedEx/Vanguard 401k *does* return transactions, so the match layer survives the holdings failure (§11). Match inference upgraded from ratio-detection to **differential diagnosis** (§5) after research showed absence of a paired deposit has at least five distinct causes. New §7 #16 (never infer a negative from missing data) and **F8, the "turn the match on" walkthrough — now the product's highest-priority flow** (§6). Employer status corrected (§2). Formula library seeded (§7 #12). **No blocking questions remain. Q4, Q6, Q7 ride as known-open — none block building.**
+> **Status:** v4 — **converged.** Last updated 2026-09-01. Changes from v3: **Q3b resolved positive** — the Northwind/the recordkeeper 401k *does* return transactions, so the match layer survives the holdings failure (§11). Match inference upgraded from ratio-detection to **differential diagnosis** (§5) after research showed absence of a paired deposit has at least five distinct causes. New §7 #16 (never infer a negative from missing data) and **F8, the "turn the match on" walkthrough — now the product's highest-priority flow** (§6). Employer status corrected (§2). Formula library seeded (§7 #12). **No blocking questions remain. Q4, Q6, Q7 ride as known-open — none block building.**
 > **v4.1 (2026-09-01):** clarified "one surface" → "one platform" in §0 and §6 (it was misread as single-page); added §12 Q8, the app's page structure.
 > **v4.2 (2026-09-01):** §7 #9 clarified and §7 #9a added — a root `AGENTS.md` router exists and is distinct from the team-mode collaboration file #9 rejected.
 > **v4.3 (2026-09-04):** §7 #17 added and §12 Q8 resolved — dashboard-first app shape, settled before the first UI screen (spec 0003).
@@ -55,8 +55,8 @@ Every one is the same shape: **take a thing I own, and explain it in my dollars.
 ## §2 Who it's for
 
 **v1 user: the founder.** One real person with:
-- a **FedEx Corporation Retirement Savings Plan II** account on Vanguard's recordkeeping platform, receiving **weekly** payroll contributions — so FedEx is a **current** employer, not a former one *(corrected in v4; v1–v3 mis-read this as an orphaned plan and built F4 on that assumption — see §6 F4)*
-- a SoFi brokerage account containing a position they don't fully understand
+- a **Northwind Retirement Savings Plan** account on the plan's recordkeeping platform, receiving **weekly** payroll contributions — so Northwind is a **current** employer, not a former one *(corrected in v4; v1–v3 mis-read this as an orphaned plan and built F4 on that assumption — see §6 F4)*
+- a brokerage account containing a position they don't fully understand
 - **an active, unresolved instance of the exact problem the product exists to solve:** *"I currently don't match and I don't know how to, exactly."*
 
 **The audience it generalizes to:** low-to-middle-income earners, roughly 20s–40s, who acquired investment accounts through employment or a single act of initiative and never got a map. Financially *motivated* but not financially *literate*. The guiding phrase from the interview: **"even someone with a single dollar can do something."**
@@ -72,7 +72,7 @@ What defines them is not income — it is that **nobody has ever explained their
 
 **v1 success is a single concrete bar:**
 
-> You understand what is in your SoFi account, and **the tool has walked you from "I don't know how to match" to a changed contribution rate.**
+> You understand what is in your brokerage account, and **the tool has walked you from "I don't know how to match" to a changed contribution rate.**
 
 That second clause replaces v1–v3's vaguer "one true, actionable thing." The founder's own unresolved problem (§2) is the sharpest possible success test: it is real, it is unsolved today, and it is worth real money.
 
@@ -140,7 +140,7 @@ A separate wrinkle: **true-up** payments. Some plans reconcile the annual match 
 
 **Consequence:** the engine emits a *ranked differential with a question* (§7 #13, §7 #16), never a verdict. Detecting a match is high-confidence; detecting the *absence* of one is not, and the system must never confuse the two.
 
-**Confirmed available:** the FedEx/Vanguard plan returns dated transactions (§11 — Q3b, resolved; weekly cadence), so this method has real input even though holdings do not (§11).
+**Confirmed available:** the Northwind/the recordkeeper plan returns dated transactions (§11 — Q3b, resolved; weekly cadence), so this method has real input even though holdings do not (§11).
 
 ## §6 Core flows & surfaces
 
@@ -151,7 +151,7 @@ A separate wrinkle: **true-up** payments. Some plans reconcile the annual match 
 | F1 | **Link an account** via aggregator | The only ingestion path (§7 #4) |
 | F2 | **"What do I actually own?"** — plain-English explanation of each holding | Literacy core. **Requires `holdings`** (§7 #15) |
 | F3 | **The match check** — am I capturing my full employer match? | Highest-value instance of F6. **Requires `transactions` only** — survives on accounts with no holdings data |
-| F4 | **The orphaned 401k** — options for a plan at a former employer | Explains options; does not pick one (§4 #2). **Deprioritized in v4** — built on a mis-read; FedEx is a current employer (§2). Kept in scope for the general audience, not for user #1 |
+| F4 | **The orphaned 401k** — options for a plan at a former employer | Explains options; does not pick one (§4 #2). **Deprioritized in v4** — built on a mis-read; Northwind is a current employer (§2). Kept in scope for the general audience, not for user #1 |
 | F5 | **Ask anything** — conversational Q&A grounded in real account data | The "buddy" |
 | F6 | **"What does this mean for my dollars?"** | **The core loop (§1).** Translates any holding into the user's own money: what it is, whether it compounds here, what it costs in fees. **Requires `holdings`** |
 | F7 | **"What can't you see, and why?"** | Every account states its capability tier plainly (§4 #7, §7 #15). An unreadable account is explained, never blank |
@@ -181,10 +181,10 @@ Other files cite these by number (`foundation.md §7 #5`).
 | 9a | **[LOCKED]** A root **`AGENTS.md` does exist** — as a *thin router* that points agents at `context/` and states the non-negotiables. It is **not** the team-mode collaboration file rejected in #9 | Different file, different job. #9 rejected branch discipline and parallel-session coordination, which a solo build does not need. The router is how `/architect`, `/develop`, and `/check` find the authority files at all — without it the toolchain reads no context | Relying on each skill to discover `context/` unaided — the drift this system exists to prevent |
 | 10 | **[LOCKED]** `user_id` on every table, RLS enabled from day one despite being single-user | Retrofitting tenancy is the expensive migration; doing it now costs almost nothing and makes #1 real rather than aspirational | Single-user schema, add tenancy later |
 | 11 | **[LOCKED]** **Paid LLM tier** with a contractual no-training guarantee (~$1–3/mo at this volume) | Free tiers reserve the right to train on submitted prompts; these prompts contain the user's balances and holdings. A privacy problem, not a cost problem. This is the *only* place §0's budget is broken | Free tier (trains on prompts); local Ollama (private and free, but weaker and tied to one machine) |
-| 12 | **[LOCKED]** PlanFacts acquired by **inference → recognition → one remembered number**. Never by sending the user to a plan document | Directly attacks §11. Tier 1: infer from deposit pairing (zero effort). Tier 2: user *recognizes* their formula from a small library of common shapes. Tier 3: ask gross pay — one number known from memory. **Library seeded with the FedEx Corporation Retirement Savings Plan II as entry #1** (user #1's employer), plus the two most common shapes | "Enter your match formula and vesting schedule" — the friction this audience abandons at |
+| 12 | **[LOCKED]** PlanFacts acquired by **inference → recognition → one remembered number**. Never by sending the user to a plan document | Directly attacks §11. Tier 1: infer from deposit pairing (zero effort). Tier 2: user *recognizes* their formula from a small library of common shapes. Tier 3: ask gross pay — one number known from memory. **Library seeded with the Northwind Retirement Savings Plan as entry #1** (user #1's employer), plus the two most common shapes | "Enter your match formula and vesting schedule" — the friction this audience abandons at |
 | 13 | **[LOCKED]** Inference is surfaced as a **question**, never asserted as fact | "I see two deposits every two weeks in a 2:1 ratio — does that look like a 50% match?" Keeps §4 #1 and #3 intact and converts a guess into a better question | Asserting inferred figures — one wrong number costs the trust the product runs on |
 | 14 | **[LOCKED]** Forward projections allowed **only as clearly-labeled illustrative hypotheticals** — *"if this returned 7% a year, which is not a prediction, $100 becomes $101.75 in 3 months"* | The user's own question ("in 3 months would I gain a dollar?") is a projection; refusing to answer it is its own failure. Labeling keeps it an illustration rather than a forecast | Silent projections (imply prediction); refusing projections entirely (leaves the real question unanswered) |
-| 15 | **[LOCKED]** **Per-account capability tiers.** Each linked account stores which of `balance` / `holdings` / `transactions` it actually returns, discovered at link time. Features are gated on capabilities, and missing capability is surfaced honestly (§4 #7) | Forced by evidence: the FedEx/Vanguard 401k returns balance but not holdings (§11 — Q3, resolved). Provider depth varies and is outside our control — modelling it explicitly is the only honest option | Assuming uniform data depth — produces blank screens, false zeros, and features that silently do nothing |
+| 15 | **[LOCKED]** **Per-account capability tiers.** Each linked account stores which of `balance` / `holdings` / `transactions` it actually returns, discovered at link time. Features are gated on capabilities, and missing capability is surfaced honestly (§4 #7) | Forced by evidence: the Northwind/the recordkeeper 401k returns balance but not holdings (§11 — Q3, resolved). Provider depth varies and is outside our control — modelling it explicitly is the only honest option | Assuming uniform data depth — produces blank screens, false zeros, and features that silently do nothing |
 | 16 | **[LOCKED]** **Never infer a negative from missing data.** Detecting a match is high-confidence; detecting its *absence* is not. Any "you are not being matched" conclusion must be surfaced as a ranked differential with a question (§5), never as a finding | Research established at least five distinct causes for a single unpaired deposit — including not-yet-eligible and annual lump-sum timing — with opposite correct responses. Asserting "no match" wrongly is the single most damaging error the product can make: it would tell a user to act on a problem they do not have | Treating absence of a paired deposit as evidence of no match — the naive implementation, and wrong |
 | 17 | **[LOCKED — v4.3, resolves §12 Q8]** **Dashboard-first app shape.** The signed-in product opens on the user's money (balance, what they own, what was noticed); Fin is a panel/composer the user opens to ask, not the front door | A beginner who does not yet know the questions to ask (§2) bounces off a blank chat prompt; leading with what the tool noticed serves F6/F7/F8 (proactive surfacing) and matches the design export's own UI kit | Chat-first (Fin as the app — intimidating for this audience); hybrid home (more to build for no clear first-screen gain) |
 
@@ -253,7 +253,7 @@ Detail lives in `architecture.md`; the decisions and reasoning live here.
 
 *(v1 named the plan-facts gap here; §7 #12–13 defused it. v2 named holdings-depth; v3 recorded that test failing. v4 records the second test passing — the risk is now bounded and the product is shaped around it.)*
 
-Evidence, 2026-09-01 — Credit Karma, **FedEx Corporation Retirement Savings Plan II** on Vanguard's recordkeeping platform:
+Evidence, 2026-09-01 — an account aggregator, **Northwind Retirement Savings Plan** on the plan's recordkeeping platform:
 
 | Data product | Result |
 |---|---|
@@ -271,11 +271,11 @@ Evidence, 2026-09-01 — Credit Karma, **FedEx Corporation Retirement Savings Pl
 
 None blocking. The foundation is converged; these ride alongside the build.
 
-**Q4 — Does SoFi return holdings via Plaid Investments?** The only remaining data unknown. With the 401k confirmed holdings-blind (§11), SoFi is the sole home for F2 and F6. Architecture does not change either way — capability tiers (§7 #15) absorb the answer — but if it also fails, §1's core loop has nowhere to run and the product becomes match-only. Resolve at first link.
+**Q4 — Does the brokerage return holdings via Plaid Investments?** The only remaining data unknown. With the 401k confirmed holdings-blind (§11), the brokerage is the sole home for F2 and F6. Architecture does not change either way — capability tiers (§7 #15) absorb the answer — but if it also fails, §1's core loop has nowhere to run and the product becomes match-only. Resolve at first link.
 
-**Q4b — Does Plaid match Credit Karma's depth on the FedEx plan?** Different aggregation stacks; §11's evidence is first-party but from a different aggregator. Also worth re-checking holdings in ~1 week — *"check back later"* may be a pending state rather than a refusal.
+**Q4b — Does Plaid match an account aggregator's depth on the Northwind plan?** Different aggregation stacks; §11's evidence is first-party but from a different aggregator. Also worth re-checking holdings in ~1 week — *"check back later"* may be a pending state rather than a refusal.
 
-**Q5b — Is FedEx confirmed as a current employer?** Inferred in v4 from weekly ongoing contributions (§2), correcting v1–v3. If wrong, F4 returns to priority and F8's premise changes. **Cheap to confirm; assumed until contradicted.**
+**Q5b — Is Northwind confirmed as a current employer?** Inferred in v4 from weekly ongoing contributions (§2), correcting v1–v3. If wrong, F4 returns to priority and F8's premise changes. **Cheap to confirm; assumed until contradicted.**
 
 **Q6 — Retention.** Literacy tools have a one-time-use problem: you learn the thing, you leave. F8 sharpens the question rather than answering it — once the match is turned on, what brings someone back? Not blocking (§3's bar is a one-time outcome), but it decides whether §7 #1 is ever worth acting on.
 
@@ -289,16 +289,16 @@ Checked **2026-09-01**. This guidance goes stale; re-check before acting on it.
 
 | Source | Used for |
 |---|---|
-| **Direct observation — Credit Karma, FedEx Corporation Retirement Savings Plan II (Vanguard), 2026-09-01** | **Holdings unavailable; balance and dated weekly transactions available. Resolves Q3 (negative) and Q3b (positive) — both closed; see §11. Drives §11, §5, §7 #15.** First-party evidence, outranks vendor documentation |
-| [Beagle — FedEx 401k match & vesting](https://meetbeagle.com/resources/articles/2025-fedex-401k-match-vesting-schedule-8-percent-employer-contribution) · [MyPlanIQ — FedEx Retirement Savings Plan II](https://www.myplaniq.com/invest/plancontribution-match/fedex-corporation-retirement-savings-plan-ii/) | Formula-library seed entry #1; eligibility service period (§7 #12, §5). **Third-party summaries — verify against plan documents before the product asserts them** |
+| **Direct observation — an account aggregator, Northwind Retirement Savings Plan (the recordkeeper), 2026-09-01** | **Holdings unavailable; balance and dated weekly transactions available. Resolves Q3 (negative) and Q3b (positive) — both closed; see §11. Drives §11, §5, §7 #15.** First-party evidence, outranks vendor documentation |
+| Third-party plan-match and vesting summaries for a large employer's retirement plan (sources withheld from this public copy) | Formula-library seed entry #1; eligibility service period (§7 #12, §5). **Third-party summaries — verify against plan documents before the product asserts them** |
 | [SHRM — 401(k) true-up payments](https://www.shrm.org/topics-tools/news/benefits-compensation/consider-401k-true-payments-employer-matching-contributions) · [Newfront — annual match true-up](https://www.newfront.com/blog/401kology-annual-match-true-up) | Per-paycheck vs annual lump-sum match timing; true-up wrinkle (§5, §7 #16) |
 | [Plaid — Investments API docs](https://plaid.com/docs/api/products/investments/) | Investments product capabilities (§7 #3) |
 | [Plaid — Investments product overview](https://plaid.com/products/investments/) | ~20 account types incl. retirement plan providers (§11 — Q3, resolved) |
-| [Plaid — Vanguard institution coverage](https://plaid.com/institutions/vanguard/) | Products listed: Assets, Balance, Transactions (§11 — Q3, resolved) |
+| Plaid — recordkeeper institution coverage (specific institution URL withheld) | Products listed: Assets, Balance, Transactions (§11 — Q3, resolved) |
 | [Plaid — Pricing](https://plaid.com/pricing/) | Free Trial: 10 Production Items; Investments billed per active Item/month (§7 #3, §10) |
 | [Beagle — Principal 401k aggregation changes](https://meetbeagle.com/resources/articles/connecting-principal-401k-mint-ynab-monarch-finicity-changes-2025) | Precedent: recordkeeper revoked third-party 401k sync (§7 #4, §7 #8, §10, §11) |
-| [RIABiz — Vanguard joins recordkeeper data detente](https://riabiz.com/a/2021/9/24/vanguard-group-becomes-second-domino-to-fall-in-401k-recordkeeper-detente-on-plan-portability-and-the-push-is-on-to-cajole-fidelity-the-dc-king-to-follow-suit) | Vanguard opened plan-data access; Fidelity a holdout (§11 — Q3, resolved) |
-| [Credit Karma — Net Worth launch](https://www.creditkarma.com/about/releases/credit-karma-net-worth) | Net-worth aggregation = balances; investment insights a later iteration (§11 — Q3, resolved) |
-| [Human Interest — 401k employer match types](https://humaninterest.com/learn/articles/looking-in-depth-at-the-401k-employer-match/) | Most common Vanguard-plan formula 50% on first 6%; runner-up 100% on first 3% + 50% on next 2% (§5, §7 #12) |
+| Industry coverage — a major recordkeeper opened plan-data access (source URL withheld) | The recordkeeper opened plan-data access; another large recordkeeper a holdout (§11 — Q3, resolved) |
+| An account aggregator — net-worth launch (source URL withheld) | Net-worth aggregation = balances; investment insights a later iteration (§11 — Q3, resolved) |
+| [Human Interest — 401k employer match types](https://humaninterest.com/learn/articles/looking-in-depth-at-the-401k-employer-match/) | Most common the recordkeeper-plan formula 50% on first 6%; runner-up 100% on first 3% + 50% on next 2% (§5, §7 #12) |
 | [Free LLM API tiers, 2026](https://wetheflywheel.com/en/ai-model-access/free-llm-api-tiers-2026/) | Free-tier prompt-training caveat (§7 #11) |
 | [Database free tier comparison, 2026](https://agentdeals.dev/database-free-tier-comparison-2026) | Supabase vs Neon free-tier limits and pausing (§7 #6, §10) |

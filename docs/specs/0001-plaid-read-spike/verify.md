@@ -2,7 +2,7 @@
 
 _Steps derived from spec 0001 acceptance criteria. `/check verify` runs these; `/test` locks the durable ones._
 
-**Scope note.** Tasks 1 to 8 run against Plaid **Sandbox**. AC-3 and AC-4 need the real FedEx and SoFi accounts and belong to task 9, which the engineer runs. Do not spend Production Items proving the pipeline.
+**Scope note.** Tasks 1 to 8 run against Plaid **Sandbox**. AC-3 and AC-4 need the real Northwind and brokerage accounts and belong to task 9, which the engineer runs. Do not spend Production Items proving the pipeline.
 
 ## Commands
 
@@ -39,8 +39,8 @@ Requires Plaid **Sandbox** credentials in `.env.local` (copy `.env.example`).
 
 - **AC-1** link, exchange, token never client side → covered by the Link steps, the restart step, and the `NEXT_PUBLIC` grep
 - **AC-2** four outcome classification → covered by the capability table step
-- **AC-3** FedEx capability record → **task 9 only**, real account required (pipeline proven in sandbox: an `investment/401k` account returned holdings and transactions as `data`, all non-investment accounts as `EMPTY`)
-- **AC-4** SoFi capability record → **task 9 only**, real account required (pipeline proven in sandbox)
+- **AC-3** Northwind capability record → **task 9 only**, real account required (pipeline proven in sandbox: an `investment/401k` account returned holdings and transactions as `data`, all non-investment accounts as `EMPTY`)
+- **AC-4** the brokerage capability record → **task 9 only**, real account required (pipeline proven in sandbox)
 - **AC-5** transaction table readable for pairing → covered by the transactions table step
 - **AC-6** raw gitignored, fixture committed → covered by the `ls` and `git status` steps
 - **AC-7** nothing sensitive logged → covered by the dev server output scan

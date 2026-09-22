@@ -80,7 +80,7 @@ export function portfolioTotalMinor(accounts: AccountView[]): number {
  * missing-capability state (foundation.md §4 #7, §7 #15); no demo strip. Only
  * investment accounts appear (this screen is about what you own, not spending),
  * and only accounts with something to show: holdings to break down, or the
- * balance-only state that a real gap (like the FedEx 401k) produces.
+ * balance-only state that a real gap (like the Northwind 401k) produces.
  */
 export async function loadWhatYouOwnLive(): Promise<WhatYouOwnView> {
   const accounts = await getAccountsForUser();
@@ -132,7 +132,7 @@ export function loadWhatYouOwn(): WhatYouOwnView {
   const investmentAccounts = accounts.filter((a) => INVESTMENT_TYPES.has(a.type));
 
   // DEMO SCAFFOLDING (spec 0003 AC-5): the sandbox fixture's 401k returns holdings,
-  // but the confirmed real FedEx 401k (foundation.md §11) does not. To show the
+  // but the confirmed real Northwind 401k (foundation.md §11) does not. To show the
   // required missing-capability state, strip the "holdings" capability from the
   // 401k here. TODO(live-data): remove this strip when the live source lands; the
   // real account's true capabilities will drive the state on their own.

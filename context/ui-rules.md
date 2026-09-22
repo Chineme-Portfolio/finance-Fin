@@ -74,7 +74,7 @@ Surfaces map to `foundation.md` §6 flows. The export's UI kit (`design-system/s
 `foundation.md` makes three states first-class in this product. **The export did not visually design them** (it mocks the happy path). So each is 🟡 composed from export primitives below, with the genuinely open design decision marked 🕗. Do not invent beyond this; when a real screen needs one, this is the starting composition and the open question to resolve first.
 
 ### Missing capability — `foundation.md` §4 #7, §7 #15
-When an account returns a balance but not holdings (the confirmed FedEx 401k case, `foundation.md` §11), the UI **states what it cannot see and why. Never a blank, never a `$0`, never a dash** — in a money product a blank reads as a real zero.
+When an account returns a balance but not holdings (the confirmed Northwind 401k case, `foundation.md` §11), the UI **states what it cannot see and why. Never a blank, never a `$0`, never a dash** — in a money product a blank reads as a real zero.
 - 🟡 Compose from: a `Card tone="sunk"` in place of the holdings list, a `--text-muted` sentence in plain words ("We can see this account's balance, but your plan doesn't share what's inside it yet"), and an `info` icon at `--text-faint`.
 - 🕗 Open: whether to offer an action (e.g. "why?" opening a Fin message) or leave it as a plain statement. Decide when the first real capability-gapped account is built.
 

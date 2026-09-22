@@ -75,7 +75,7 @@ These are decisions, not gaps (`foundation.md` §8).
 
 ## Success
 
-> You understand what is in your SoFi account, and the tool has walked you from *"I don't know how to match"* to a changed contribution rate.
+> You understand what is in your brokerage account, and the tool has walked you from *"I don't know how to match"* to a changed contribution rate.
 
 One person, one real outcome, worth real money. Not users, not retention, not launch.
 

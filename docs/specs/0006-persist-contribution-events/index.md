@@ -93,7 +93,7 @@ Tracer Bullet: the thin thread is map to domain, persist in the existing write p
 - It rides the existing write path and replace logic, so refresh and unlink already handle it correctly for free.
 
 **Negative and tradeoffs**
-- The contribution filter is a best guess against sandbox shapes; the real FedEx 401k contribution shape is still unobserved (spec 0001 task 9). The filter may need to change once real data is seen, which is why nothing user facing depends on it yet.
+- The contribution filter is a best guess against sandbox shapes; the real Northwind 401k contribution shape is still unobserved (spec 0001 task 9). The filter may need to change once real data is seen, which is why nothing user facing depends on it yet.
 - The sandbox may return few or no true contribution transactions, so the live proof can show zero rows; the deterministic proof of the mapping is the unit test, not the sandbox.
 - One more thing the write path fetches and maps, a little more work per link, though the transactions were already being fetched.
 
@@ -103,7 +103,7 @@ Tracer Bullet: the thin thread is map to domain, persist in the existing write p
 
 ## Follow-up
 
-- [ ] Observe the real FedEx 401k transaction history (spec 0001 task 9) and revisit the contribution filter and the `source` classification against it, before the match differential trusts them.
+- [ ] Observe the real Northwind 401k transaction history (spec 0001 task 9) and revisit the contribution filter and the `source` classification against it, before the match differential trusts them.
 - [ ] Build the match differential engine (F3) that reads `contribution_events` and `plan_facts` and produces the match insight, with the eligibility, lump sum, blended, and true up cases (foundation §5).
 - [ ] The plan formula library (`lib/plans/`) the differential needs for the employer side.
 

@@ -60,7 +60,7 @@ lib/insights/ ──────────┼──▶ F3  match check
 | **Plaid implementation** | The adapter interface; Plaid credentials | `foundation.md` §12 Q4 answered |
 | **Capability detection** (§7 #15) | Plaid implementation | — |
 | **Insight engine** (keystone) | 0.3 domain types **only** | Real transaction shapes (see *The one genuine tension*) |
-| **Plan formula library** (`lib/plans/`) | 0.3 | FedEx plan facts verified against plan documents |
+| **Plan formula library** (`lib/plans/`) | 0.3 | Northwind plan facts verified against plan documents |
 | **F2 / F6** — what do I own | Engine; holdings present on some account | Q4 answered — the 401k cannot serve these (`foundation.md` §11) |
 | **F3** — match check | Engine; `contribution_events`; **≥13 months history** | Plan formula library |
 | **F8** — turn the match on ★ | F3; plan formula for that employer | — |
@@ -91,7 +91,7 @@ The engine is pure and depends on nothing (`architecture.md` §4) — which argu
 
 Stated honestly rather than resolved by fiat. The pragmatic path — not a rule, a suggestion:
 
-1. Do enough of 0.1–0.5 and the Plaid implementation to **pull one real transaction history** for the FedEx plan.
+1. Do enough of 0.1–0.5 and the Plaid implementation to **pull one real transaction history** for the Northwind plan.
 2. **Look at it.** Are employer and employee contributions separate rows? Is the source itemized? What is the actual weekly cadence?
 3. *Then* write the engine's fixtures from reality, and build against them.
 

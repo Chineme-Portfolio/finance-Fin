@@ -8,7 +8,7 @@
 
 The product's core loop reads a holding and explains it in the user's own money. Its highest value single feature works out whether the user is capturing their full employer match. Both depend on data arriving from an aggregator, and the depth of that data varies by institution in ways nobody controls.
 
-One depth question is already answered by direct observation. Credit Karma displays the FedEx Corporation Retirement Savings Plan II with a balance and a transaction history, and says plainly that it does not have investment holdings for the account. So the employer plan is known to be holdings blind through at least one aggregator, and the product is already shaped around that (`foundation.md` §11, §7 #15).
+One depth question is already answered by direct observation. an account aggregator displays the Northwind Retirement Savings Plan with a balance and a transaction history, and says plainly that it does not have investment holdings for the account. So the employer plan is known to be holdings blind through at least one aggregator, and the product is already shaped around that (`foundation.md` §11, §7 #15).
 
 What is not known is whether Plaid does better or worse, whether the retail brokerage returns holdings at all, and, most importantly, what the employer plan's transaction rows actually look like. The match detection method assumes it can see an employee deferral and an employer match as two rows on the same date and take the ratio between them (`foundation.md` §5). If contributions instead arrive as one merged line, that method does not work as designed and the fallback path has to change.
 

@@ -10,7 +10,7 @@ First, the app shape. `foundation.md` §12 Q8 asked whether the signed-in produc
 
 Second, where the data comes from. There is no database and no login yet (both deliberately deferred, `foundation.md` §7 #4, §7 #10, build order). A first screen whose job is to prove the render should not also stand up auth and a live Plaid session. The committed fixture from spec 0001 is real observed data, synthetic-scrubbed, and it exercises the engine end to end.
 
-Third, and specific to this product, the missing-capability state. `foundation.md` §11 confirmed the FedEx 401k returns a balance but no holdings, and §4 #7 forbids ever rendering that gap as a blank or a zero. This is not an edge case here; it is a defining requirement, and the export never mocked it (`ui-rules.md` §5). The wrinkle: the sandbox fixture's 401k does return holdings, so the fixture alone cannot show the state. The screen must therefore include a representative account that lacks the holdings capability, or the requirement could not be built.
+Third, and specific to this product, the missing-capability state. `foundation.md` §11 confirmed the Northwind 401k returns a balance but no holdings, and §4 #7 forbids ever rendering that gap as a blank or a zero. This is not an edge case here; it is a defining requirement, and the export never mocked it (`ui-rules.md` §5). The wrinkle: the sandbox fixture's 401k does return holdings, so the fixture alone cannot show the state. The screen must therefore include a representative account that lacks the holdings capability, or the requirement could not be built.
 
 The consequence of not building this now is that the engine stays an abstraction, the design system stays unexercised, and the app shape stays open, blocking every UI slice behind it.
 

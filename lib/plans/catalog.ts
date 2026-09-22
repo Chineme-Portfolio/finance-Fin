@@ -6,7 +6,7 @@ import type { CatalogEntry } from "./types";
  * Static data only. It powers the recognition step (tier 2): show the user a few
  * common shapes and their own employer's plan, and let them recognise theirs.
  *
- * HONESTY: the FedEx entry's formula is PROVISIONAL. It has not been confirmed
+ * HONESTY: the Northwind entry's formula is PROVISIONAL. It has not been confirmed
  * against the plan document, and the real 401k data has not been observed
  * (spec 0001 task 9 is deferred). It is `verified: false` with a note. A caller
  * must surface an unverified formula as a question, never assert it as fact
@@ -16,14 +16,14 @@ import type { CatalogEntry } from "./types";
  */
 export const MATCH_FORMULA_CATALOG: readonly CatalogEntry[] = [
   {
-    id: "fedex-retirement-savings-plan-ii",
-    label: "FedEx Corporation Retirement Savings Plan II",
-    employer: "FedEx Corporation",
+    id: "northwind-retirement-savings-plan",
+    label: "Northwind Retirement Savings Plan",
+    employer: "Northwind Traders",
     // PROVISIONAL, not confirmed. A plausible common shape stands in until the
     // real formula is recognised by the user or read from paired deposits.
     formula: { tiers: [{ matchRateBps: 10000, uptoContributionBps: 500 }] },
     verified: false,
-    note: "Provisional shape, not confirmed against the FedEx plan document. Must be surfaced to the user as a question to recognise or correct, never presented as fact (foundation section 7 #12, #13, #16). Update to verified once the real formula is known.",
+    note: "Provisional shape, not confirmed against the Northwind plan document. Must be surfaced to the user as a question to recognise or correct, never presented as fact (foundation section 7 #12, #13, #16). Update to verified once the real formula is known.",
   },
   {
     id: "generic-full-match-to-cap",

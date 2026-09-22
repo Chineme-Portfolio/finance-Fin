@@ -3,15 +3,15 @@ import { MATCH_FORMULA_CATALOG, getCatalogEntry, maxMatchContributionBps } from 
 import type { CatalogEntry, MatchFormula } from "./index";
 
 describe("plan formula catalog (spec 0007)", () => {
-  it("seeds the FedEx plan as an unverified entry with a disclosure note", () => {
-    const fedex = getCatalogEntry("fedex-retirement-savings-plan-ii");
-    expect(fedex).toBeDefined();
-    expect(fedex!.employer).toBe("FedEx Corporation");
-    expect(fedex!.verified).toBe(false);
+  it("seeds the Northwind plan as an unverified entry with a disclosure note", () => {
+    const entry = getCatalogEntry("northwind-retirement-savings-plan");
+    expect(entry).toBeDefined();
+    expect(entry!.employer).toBe("Northwind Traders");
+    expect(entry!.verified).toBe(false);
     // A verified:false entry carries a note (the union guarantees it at compile
     // time; this asserts the seeded note is actually present and non empty).
-    if (fedex!.verified === false) {
-      expect(fedex!.note.length).toBeGreaterThan(0);
+    if (entry!.verified === false) {
+      expect(entry!.note.length).toBeGreaterThan(0);
     }
   });
 
