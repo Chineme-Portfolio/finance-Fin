@@ -48,3 +48,8 @@ export function deriveInsights(input: EngineInput): Insight[] {
 
 export { deriveComposition } from "./composition";
 export { deriveCashDrag } from "./cash-drag";
+export {
+  computeEmployerMatchMinor,
+  maxEmployerMatchMinor,
+  unclaimedMatchMinor,
+} from "./match";
