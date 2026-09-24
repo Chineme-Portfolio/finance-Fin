@@ -1,6 +1,7 @@
 import type { EngineInput, Insight } from "@/lib/types";
 import { deriveComposition } from "./composition";
 import { deriveCashDrag } from "./cash-drag";
+import { deriveMatch } from "./match-differential";
 
 /**
  * The deterministic insight engine. The keystone (foundation.md section 9,
@@ -15,9 +16,8 @@ import { deriveCashDrag } from "./cash-drag";
  * It computes every number it returns. No figure here originated anywhere but
  * its own arithmetic over the inputs (foundation.md section 4 #1, section 7 #7).
  *
- * `contributionEvents` and `planFacts` are part of the input contract for the
- * deferred employer match differential (foundation.md section 7 #16, gated on
- * spec 0001 task 9). This slice does not consume them.
+ * `contributionEvents`, `planFacts`, and `matchFormulas` feed the employer match
+ * differential (spec 0008, foundation.md section 7 #16).
  */
 export function deriveInsights(input: EngineInput): Insight[] {
   const holdingsByAccount = new Map<string, typeof input.holdings>();
@@ -26,6 +26,17 @@ export function deriveInsights(input: EngineInput): Insight[] {
     list.push(holding);
     holdingsByAccount.set(holding.accountId, list);
   }
+
+  // Group the match differential's inputs by account, so each account is reasoned
+  // over with only its own deposits and plan facts.
+  const eventsByAccount = new Map<string, typeof input.contributionEvents>();
+  for (const event of input.contributionEvents) {
+    const list = eventsByAccount.get(event.accountId) ?? [];
+    list.push(event);
+    eventsByAccount.set(event.accountId, list);
+  }
+  const planFactsByAccount = new Map<string, (typeof input.planFacts)[number]>();
+  for (const facts of input.planFacts) planFactsByAccount.set(facts.accountId, facts);
 
   const insights: Insight[] = [];
   for (const account of input.accounts) {
@@ -42,12 +53,24 @@ export function deriveInsights(input: EngineInput): Insight[] {
     if (composition) insights.push(composition);
     const cashDrag = deriveCashDrag(account, accountHoldings);
     if (cashDrag) insights.push(cashDrag);
+
+    // The match differential runs on the employer account's transactions (spec
+    // 0008). deriveMatch returns null for a non employer account or one with no
+    // contribution events, so calling it for every account is safe.
+    const match = deriveMatch(
+      account,
+      eventsByAccount.get(account.id) ?? [],
+      planFactsByAccount.get(account.id) ?? null,
+      input.matchFormulas?.[account.id] ?? null,
+    );
+    if (match) insights.push(match);
   }
   return insights;
 }
 
 export { deriveComposition } from "./composition";
 export { deriveCashDrag } from "./cash-drag";
+export { deriveMatch } from "./match-differential";
 export {
   computeEmployerMatchMinor,
   maxEmployerMatchMinor,
