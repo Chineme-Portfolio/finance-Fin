@@ -3,8 +3,12 @@ import {
   computeEmployerMatchMinor,
   maxEmployerMatchMinor,
   unclaimedMatchMinor,
+  observedPeriodsPerYear,
+  contributionCostPerPeriodMinor,
+  takeHomeCostPerPeriodMinor,
 } from "./match";
 import type { MatchFormula } from "@/lib/plans";
+import type { ContributionEvent } from "@/lib/types";
 
 const GROSS = 10_000_000; // $100,000
 
@@ -57,5 +61,49 @@ describe("maxEmployerMatchMinor + unclaimedMatchMinor (spec 0007)", () => {
     expect(unclaimedMatchMinor(tiered, 300, GROSS)).toBe(100_000); // $1,000 left on the table at 3%
     expect(unclaimedMatchMinor(tiered, 500, GROSS)).toBe(0); // fully captured at 5%
     expect(unclaimedMatchMinor(tiered, 1000, GROSS)).toBe(0); // above cap, never negative
+  });
+});
+
+describe("the F8 walk figures (spec 0009)", () => {
+  const ev = (date: string): ContributionEvent => ({
+    accountId: "a1",
+    date,
+    amountMinor: 60000,
+    currency: "USD",
+    source: "unknown",
+    rawName: "EMPLOYEE 401K DEFERRAL",
+  });
+  const dates = (count: number, stepDays: number, start = "2025-01-03"): ContributionEvent[] =>
+    Array.from({ length: count }, (_, i) =>
+      ev(new Date(new Date(start + "T00:00:00Z").getTime() + i * stepDays * 86_400_000).toISOString().slice(0, 10)),
+    );
+
+  it("infers pay frequency from the modal gap between deposit dates", () => {
+    expect(observedPeriodsPerYear(dates(10, 7))).toBe(52); // weekly -> ~52
+    expect(observedPeriodsPerYear(dates(10, 14))).toBe(26); // biweekly -> ~26
+    expect(observedPeriodsPerYear(dates(6, 30))).toBe(12); // ~monthly -> ~12
+  });
+
+  it("returns null when there is not enough history to measure a cadence", () => {
+    expect(observedPeriodsPerYear([])).toBeNull();
+    expect(observedPeriodsPerYear([ev("2025-01-03")])).toBeNull();
+    expect(observedPeriodsPerYear([ev("2025-01-03"), ev("2025-01-03")])).toBeNull(); // same date
+  });
+
+  it("computes the before-tax per-paycheck cost of a rate increase", () => {
+    // 3% -> 5% on $100,000, weekly: 2% of 100k = $2,000/yr / 52 = ~$38.46.
+    expect(contributionCostPerPeriodMinor(300, 500, GROSS, 52)).toBe(3846);
+    // A target at or below the current rate is not a cost.
+    expect(contributionCostPerPeriodMinor(500, 300, GROSS, 52)).toBe(0);
+    expect(contributionCostPerPeriodMinor(300, 300, GROSS, 52)).toBe(0);
+    // No confirmed frequency -> 0 (the caller gates display on a real frequency).
+    expect(contributionCostPerPeriodMinor(300, 500, GROSS, 0)).toBe(0);
+  });
+
+  it("reduces the take-home cost by the assumed marginal rate (a labelled illustration)", () => {
+    // before-tax 3846, default 22% -> 3846 * 0.78 = ~3000.
+    expect(takeHomeCostPerPeriodMinor(300, 500, GROSS, 52)).toBe(3000);
+    // An explicit marginal rate is honoured; 0% means take-home equals before-tax.
+    expect(takeHomeCostPerPeriodMinor(300, 500, GROSS, 52, 0)).toBe(3846);
   });
 });

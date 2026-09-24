@@ -7,7 +7,8 @@ import type { CreateLinkTokenResult, ExchangeResult } from "@/lib/aggregator";
 import { capture } from "@/lib/aggregator/capture";
 import { saveObservation } from "@/lib/aggregator/observation-store";
 import { linkAndPersist, refreshItem, unlinkItem } from "@/lib/sync";
-import { getItemToken } from "@/lib/db";
+import { getItemToken, savePlanFacts } from "@/lib/db";
+import { getCatalogEntry } from "@/lib/plans";
 
 /**
  * Server Actions (spec 0005).
@@ -139,4 +140,56 @@ export async function sandboxLinkFormAction(): Promise<void> {
   await sandboxLinkAction();
   revalidatePath("/");
   revalidatePath("/dev/plaid-spike");
+}
+
+/**
+ * F8 acquisition (spec 0009): persist the plan facts the match walk collects.
+ * Each validates its input at the boundary (code-standards section 4) and writes
+ * through the user scoped lib/db (deferred auth: the fixed dev user id scopes the
+ * write, spec 0004). No figure is computed here; these only store the raw inputs.
+ */
+
+/** A sane ceiling for a contribution rate: 100% of pay, in basis points. */
+const MAX_RATE_BPS = 10000;
+
+/** Step 1: persist the formula the user recognized (by catalog entry id). */
+export async function confirmFormulaAction(
+  accountId: string,
+  matchFormulaId: string,
+): Promise<ActionResult> {
+  try {
+    if (!accountId) throw new Error("confirmFormula: missing account");
+    if (!getCatalogEntry(matchFormulaId)) throw new Error("confirmFormula: unknown formula");
+    await savePlanFacts({ accountId, matchFormulaId });
+    revalidatePath("/match");
+    return { ok: true };
+  } catch (error: unknown) {
+    return { ok: false, message: message(error, "could not save the formula") };
+  }
+}
+
+/** Step 2: persist the remembered gross pay and the confirmed current rate. */
+export async function savePlanNumbersAction(
+  accountId: string,
+  grossPayMinor: number,
+  currentContributionBps: number,
+): Promise<ActionResult> {
+  try {
+    if (!accountId) throw new Error("savePlanNumbers: missing account");
+    if (!Number.isInteger(grossPayMinor) || grossPayMinor <= 0) {
+      throw new Error("savePlanNumbers: gross pay must be a positive whole number of cents");
+    }
+    if (
+      !Number.isInteger(currentContributionBps) ||
+      currentContributionBps < 0 ||
+      currentContributionBps > MAX_RATE_BPS
+    ) {
+      throw new Error("savePlanNumbers: contribution rate is out of range");
+    }
+    await savePlanFacts({ accountId, grossPayMinor, contributionRateBps: currentContributionBps });
+    revalidatePath("/match");
+    return { ok: true };
+  } catch (error: unknown) {
+    return { ok: false, message: message(error, "could not save your numbers") };
+  }
 }

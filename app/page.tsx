@@ -152,7 +152,11 @@ export default async function Page() {
 
   return (
     <>
-      <TopNav items={["Overview", "What you own", "Match", "Ask Fin"]} active="What you own" />
+      <TopNav
+        items={["Overview", "What you own", "Match", "Ask Fin"]}
+        active="What you own"
+        hrefs={{ "What you own": "/", Match: "/match" }}
+      />
       <main
         style={{
           maxWidth: "var(--page-max)",

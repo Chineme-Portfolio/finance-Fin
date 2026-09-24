@@ -19,7 +19,7 @@
 
 **Every component consumes semantic tokens only** (`ui-tokens.md` §7). A ported component carrying a raw hex or a raw ramp token is a bug, not a port.
 
-**Ported so far (spec 0003, the "what you own" screen):** nine components are built and live in `components/ui/`, marked ✅ below with their paths: Card, Rule, Badge, Wordmark, Icon, Stat, AllocationBar, HoldingRow, TopNav. Reuse them; do not re-implement. Everything else is still ⬜ planned (designed in the export, not yet ported). The throwaway spike page (`foundation.md` → spec 0001, now at `/dev/plaid-spike`) is deliberately unstyled and is not a registry component.
+**Ported so far.** Spec 0003 (the "what you own" screen) ported nine: Card, Rule, Badge, Wordmark, Icon, Stat, AllocationBar, HoldingRow, TopNav. Spec 0009 (the match walk) ported eight more: Button, Radio, Input, BuddyAvatar, BuddyMessage, Dialog, StepProgress, WinMoment. All are marked ✅ below with their paths; reuse them, do not re-implement. Everything else is still ⬜ planned (designed in the export, not yet ported). The throwaway spike page (`foundation.md` → spec 0001, now at `/dev/plaid-spike`) is deliberately unstyled and is not a registry component.
 
 ---
 
@@ -27,8 +27,8 @@
 
 | Component | Status | Built path | Variants / key props | Purpose |
 |---|---|---|---|---|
-| Button | ⬜ planned | — | variant: primary·secondary·ghost·inverse·pop; size sm·md·lg; iconLeft/Right; full; pill | The action control. One primary per view; `pop` (apricot) for win moments only |
-| IconButton | ⬜ planned | — | variant: ghost·outline·tint·solid; size; required `label` | Round icon-only control for toolbars and row actions |
+| Button | ✅ built | `components/ui/Button.tsx` | variant: primary·secondary·ghost·inverse·pop; size sm·md·lg; iconLeft/Right; full; pill | The action control. One primary per view; `pop` (apricot) for win moments only (ported spec 0009) |
+| IconButton | ⬜ planned | — | variant: ghost·outline·tint·solid; size; required `label` | Round icon-only control for toolbars and row actions (spec 0009 inlined the one close button `Dialog` needed rather than porting this) |
 | Card | ✅ built | `components/ui/Card.tsx` | tone: surface·sunk·tint·warm·brand·inverse; elevation 0–3; interactive | The surface container. `inverse`/`brand` auto-apply the `.fb-inverse` scope |
 | Rule | ✅ built | `components/ui/Rule.tsx` | tone: hairline·strong·brand; vertical; inset | The signature rounded divider. Use instead of a border |
 | Badge | ✅ built | `components/ui/Badge.tsx` | tone: neutral·brand·gain·loss·attention·ink; size | Status pill. `attention` = unclaimed |
@@ -40,10 +40,10 @@
 
 | Component | Status | Built path | Variants / key props | Purpose |
 |---|---|---|---|---|
-| Input | ⬜ planned | — | label; hint; error; prefix; suffix; iconLeft; size | Text field. Money inputs use `prefix="$"` so the mark is serif |
+| Input | ✅ built | `components/ui/Input.tsx` | label; hint; error; prefix; suffix; iconLeft; size | Text field. Money inputs use `prefix="$"` so the mark is serif (ported spec 0009) |
 | Select | ⬜ planned | — | label; hint; options; size | Native select with FINBUDDY chrome |
 | Checkbox | ⬜ planned | — | label; description; checked | Multi-select; `description` when the choice affects money |
-| Radio | ⬜ planned | — | label; description; boxed | Single choice; `boxed` is the tap-target option card used in onboarding and the match walk |
+| Radio | ✅ built | `components/ui/Radio.tsx` | label; description; boxed; checked (fully controlled, no default) | Single choice; `boxed` is the tap-target option card used in the match walk (ported spec 0009) |
 | Switch | ⬜ planned | — | label; description; checked | Immediate on/off (notifications, auto-escalation) |
 
 ## data
@@ -60,8 +60,8 @@
 
 | Component | Status | Built path | Variants / key props | Purpose |
 |---|---|---|---|---|
-| BuddyAvatar | ⬜ planned | — | size; tone: clay·ink·apricot | Fin's mark: a serif "F" in a clay circle. No illustrated character exists |
-| BuddyMessage | ⬜ planned | — | typing; showAvatar; footer | Fin speaking; leads with the answer in bold. **The vehicle for the inferred-and-unconfirmed state** (`ui-rules.md` §5) |
+| BuddyAvatar | ✅ built | `components/ui/BuddyAvatar.tsx` | size; tone: clay·ink·apricot | Fin's mark: a serif "F" in a clay circle. No illustrated character exists (ported spec 0009) |
+| BuddyMessage | ✅ built | `components/ui/BuddyMessage.tsx` | typing; showAvatar; footer | Fin speaking; leads with the answer in bold. **The vehicle for the inferred-and-unconfirmed state** (`ui-rules.md` §5). Ported spec 0009 |
 | UserMessage | ⬜ planned | — | — | The person's own words, shown verbatim and lowercase |
 | ChatComposer | ⬜ planned | — | placeholder; suggestions; onSend | The pill ask field with suggestion pills above |
 
@@ -69,11 +69,11 @@
 
 | Component | Status | Built path | Variants / key props | Purpose |
 |---|---|---|---|---|
-| Dialog | ⬜ planned | — | open; title; footer; width | Centred modal over a blurred ink veil. Where a money change is confirmed (`foundation.md` §7 #2a) |
+| Dialog | ✅ built | `components/ui/Dialog.tsx` | open; title; footer; width; onClose | Centred modal over a blurred ink veil. Where a money change is confirmed (`foundation.md` §7 #2a). Ported spec 0009 (close control inlined, not IconButton) |
 | Toast | ⬜ planned | — | tone: info·success·attention; action | Pill confirmation, one at a time, ~5s |
 | Tooltip | ⬜ planned | — | content; side | One-sentence jargon definition on the underlined term |
-| StepProgress | ⬜ planned | — | steps; current | Dots-and-rounded-rules progress for onboarding and the match walk |
-| WinMoment | ⬜ planned | — | headline; value; action | The celebration surface: ink panel, apricot glyph, serif figure. **Money actually secured only** — max one per session |
+| StepProgress | ✅ built | `components/ui/StepProgress.tsx` | steps; current | Dots-and-rounded-rules progress for the match walk (ported spec 0009) |
+| WinMoment | ✅ built | `components/ui/WinMoment.tsx` | headline; value; action; children | The celebration surface: ink panel, apricot glyph, serif figure. In F8 it shows a **projected** capture on a self-reported change, labelled a projection (spec 0009, `foundation.md` §7 #14); max one per session |
 
 ## navigation
 

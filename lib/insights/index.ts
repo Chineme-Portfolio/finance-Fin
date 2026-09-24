@@ -75,4 +75,8 @@ export {
   computeEmployerMatchMinor,
   maxEmployerMatchMinor,
   unclaimedMatchMinor,
+  observedPeriodsPerYear,
+  contributionCostPerPeriodMinor,
+  takeHomeCostPerPeriodMinor,
+  DEFAULT_MARGINAL_RATE_BPS,
 } from "./match";

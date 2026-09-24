@@ -12,11 +12,15 @@ import { Wordmark } from "./Wordmark";
 interface TopNavProps extends HTMLAttributes<HTMLElement> {
   items?: string[];
   active?: string;
+  /** Optional destination per item label. An item with an href renders as a link
+   * (real navigation, spec 0003 Follow-up); items without one stay presentational
+   * spans, so this is backward compatible. */
+  hrefs?: Record<string, string>;
   right?: ReactNode;
   tone?: "paper" | "ink";
 }
 
-export function TopNav({ items = [], active, right, tone = "paper", style, ...rest }: TopNavProps) {
+export function TopNav({ items = [], active, hrefs, right, tone = "paper", style, ...rest }: TopNavProps) {
   const inverse = tone === "ink";
   const header: CSSProperties = {
     display: "flex", alignItems: "center", gap: 32, height: "var(--topbar-h)",
@@ -38,9 +42,16 @@ export function TopNav({ items = [], active, right, tone = "paper", style, ...re
             fontFamily: "var(--font-sans)",
             whiteSpace: "nowrap",
           };
-          // Rendered as a span, not a button: this shell nav is presentational on
-          // the first screen (no routing wired yet). A real button/link arrives
-          // with the other nav destinations (spec 0003 Follow-up).
+          // An item with a destination is a real link; the rest stay presentational
+          // spans until their destinations are built (spec 0003 Follow-up).
+          const href = hrefs?.[it];
+          if (href) {
+            return (
+              <a key={it} href={href} aria-current={on ? "page" : undefined} style={{ ...btn, textDecoration: "none" }}>
+                {it}
+              </a>
+            );
+          }
           return (
             <span key={it} aria-current={on ? "page" : undefined} style={btn}>
               {it}
